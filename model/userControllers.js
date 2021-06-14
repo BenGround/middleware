@@ -9,7 +9,7 @@ exports.getUsers = async (req, res) => {
         .catch(error => res.status(400).json({error}));
 }
 
-exports.getUser = async (req, res) => {
+exports.getUserById = async (req, res) => {
     const pool = await sql.connect(config);
 
     return await pool.request()
@@ -19,11 +19,20 @@ exports.getUser = async (req, res) => {
         .catch(error => res.status(400).json({error}));
 }
 
+exports.getUserByEmail = async (req, res) => {
+    const pool = await sql.connect(config);
+
+    return await pool.request()
+        .input('email', sql.NVarChar, req.body.email)
+        .query("SELECT * FROM users WHERE email = @email")
+        .then(User => res.status(200).json(User.recordset))
+        .catch(error => res.status(400).json({error}));
+}
+
 exports.createUser = async (req, res) => {
     const pool = await sql.connect(config);
 
     return await pool.request()
-        .input('id', sql.Int, req.body.id)
         .input('email', sql.NVarChar, req.body.email)
         .input('password', sql.NVarChar, req.body.password)
         .input('firstname', sql.NVarChar, req.body.firstname)
