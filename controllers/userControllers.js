@@ -31,7 +31,6 @@ exports.createUser = async (req, res) => {
     .catch(error => res.status(400).json({error}));
 }
 
-
 exports.deleteUser = async (req, res) => {
     return await user.destroy({ where: { id: req.params.idUser } })
         .then(function (isDeleted) {
