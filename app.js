@@ -5,6 +5,7 @@ const logger = require('morgan');
 const sequelize = require('./config/sqlServerInstance');
 const apiRouter = require('./routes/api');
 const connectRouter = require('./routes/connect');
+const registerRouter = require('./routes/register');
 const loggerTest = require("./models/logger");
 const {checkJWT} = require("./services/tokenService");
 require('dotenv').config()
@@ -14,6 +15,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use('/connect', connectRouter);
+app.use('/register', registerRouter);
 app.use('/api', function (req, res, next) {
     let token = req.headers.authorization
 

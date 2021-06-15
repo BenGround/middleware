@@ -29,7 +29,7 @@ exports.createUser = async (req, res) => {
             lastname: req.body.lastname
         }
     )
-    .then(User => res.status(200).json(User))
+    .then(User => res.status(200).json({'user': User, 'token': tokenService.createJWT(User)}))
     .catch(error => res.status(400).json({error}));
 }
 
