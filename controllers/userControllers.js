@@ -29,7 +29,7 @@ exports.createUser = async (req, res) => {
             lastname: req.body.lastname
         }
     )
-    .then(User => res.status(200).json({'user': User, 'token': tokenService.createJWT(User)}))
+    .then(User => res.status(200).json({'user': User, 'token': tokenService.createJWT(User.id)}))
     .catch(error => res.status(400).json({error}));
 }
 
@@ -53,7 +53,7 @@ exports.connectUser = async (req, res) => {
         const password = crypto.createHash("sha256").update(req.body.password).digest("hex")
 
         if (_.isEqual(password, userPassword)) {
-            let token = tokenService.createJWT(Users.rows[0])
+            let token = tokenService.createJWT(Users.rows[0].id)
 
             res.status(200).json({'token': token})
         }
