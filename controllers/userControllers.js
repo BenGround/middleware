@@ -11,13 +11,25 @@ exports.getUsers = async (req, res) => {
 
 exports.getUserById = async (req, res) => {
     await user.findOne({ where: { id: req.params.idUser } })
-        .then(User => res.status(200).json(User))
-        .catch(error => res.status(400).json({error}));
+        .then(User => {
+            if (User) {
+                res.status(200).json({'result': true, 'user': User})
+            } else {
+                res.status(200).json({'result': false, 'message': 'User not find.'})
+            }
+        })
+    .catch(error => res.status(400).json({error}));
 }
 
 exports.getUserByEmail = async (req, res) => {
     await user.findOne({ where: { email: req.body.email } })
-        .then(User => res.status(200).json(User))
+        .then(User => {
+            if (User) {
+                res.status(200).json({'result': true, 'user': User})
+            } else {
+                res.status(200).json({'result': false, 'message': 'User not find.'})
+            }
+        })
         .catch(error => res.status(400).json({error}));
 }
 
@@ -34,21 +46,34 @@ exports.createUser = async (req, res) => {
 }
 
 exports.editUser = async (req, res) => {
-    let dataToUpdate = {};
+    let userData = await user.findOne({ where: { id:req.params.idUser } });
+    let userCount = await user.findAndCountAll({ where: { id:req.params.idUser } });
 
-    if (req.body.email) {
-        dataToUpdate.email = req.body.email;
-    } else if (req.body.password) {
-        dataToUpdate.password = crypto.createHash("sha256").update(req.body.password).digest("hex");
-    } else if (req.body.firstname) {
-        dataToUpdate.firstname = req.body.firstname;
-    } else if (req.body.lastname) {
-        dataToUpdate.lastname = req.body.lastname;
+    if (userCount.count > 0) {
+        let dataToUpdate = {};
+        if (req.body.email) {
+            dataToUpdate.email = req.body.email;
+        } else if (req.body.password) {
+            dataToUpdate.password = crypto.createHash("sha256").update(req.body.password).digest("hex");
+        } else if (req.body.firstname) {
+            dataToUpdate.firstname = req.body.firstname;
+        } else if (req.body.lastname) {
+            dataToUpdate.lastname = req.body.lastname;
+        }
+
+        user.update(dataToUpdate, {where: {id: req.params.idUser}})
+            .then(function (result) {
+                console.log(userData)
+                if (result[0] === 1) {
+                    res.status(200).json({'result': true, 'user': userData})
+                } else {
+                    res.status(200).json({'result': false, 'message': 'Data provided arn\'t right.'})
+                }
+            })
+            .catch(error => res.status(400).json({error}));
+    } else {
+        res.status(200).json({'result': false, 'message': 'User not found.'});
     }
-
-    user.update(dataToUpdate, {where: { id: req.params.idUser }})
-        .then(result => res.status(200).json({'result': result[0] === 1})
-        .catch(error => res.status(400).json({error})));
 }
 
 exports.deleteUser = async (req, res) => {
@@ -57,7 +82,7 @@ exports.deleteUser = async (req, res) => {
             if (isDeleted) {
                 res.status(200).json({'result': true})
             } else {
-                res.status(200).json({'result': false, 'message': 'L\'utilisateur avec cet ID n\'existe pas'})
+                res.status(200).json({'result': false, 'message': 'User doesn\'t exist'})
             }
         })
         .catch(error => res.status(400).json({'result': false, 'error': error}));
@@ -65,15 +90,17 @@ exports.deleteUser = async (req, res) => {
 
 exports.connectUser = async (req, res) => {
     const Users = await user.findAndCountAll({ where: { email: req.body.email } });
-    const userPassword = Users.rows[0].password;
 
     if (Users.count > 0) {
+        const userPassword = Users.rows[0].password;
         const password = crypto.createHash("sha256").update(req.body.password).digest("hex")
 
         if (_.isEqual(password, userPassword)) {
             let token = tokenService.createJWT(Users.rows[0].id)
 
-            res.status(200).json({'token': token})
+            res.status(200).json({'result': true,'token': token})
         }
     }
+
+    res.status(200).json({'result': false,'message': 'User not found.'})
 }

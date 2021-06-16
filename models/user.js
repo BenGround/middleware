@@ -4,6 +4,11 @@ const sequelize = require('../config/sqlServerInstance')
 class User extends Model {}
 
 User.init({
+    id: {
+        type: DataTypes.NUMBER,
+        primaryKey: true,
+        allowNull: false
+    },
     email: {
         type: DataTypes.STRING,
         allowNull: false
