@@ -33,6 +33,24 @@ exports.createUser = async (req, res) => {
     .catch(error => res.status(400).json({error}));
 }
 
+exports.editUser = async (req, res) => {
+    let dataToUpdate = {};
+
+    if (req.body.email) {
+        dataToUpdate.email = req.body.email;
+    } else if (req.body.password) {
+        dataToUpdate.password = crypto.createHash("sha256").update(req.body.password).digest("hex");
+    } else if (req.body.firstname) {
+        dataToUpdate.firstname = req.body.firstname;
+    } else if (req.body.lastname) {
+        dataToUpdate.lastname = req.body.lastname;
+    }
+
+    user.update(dataToUpdate, {where: { id: req.params.idUser }})
+        .then(result => res.status(200).json({'result': result[0] === 1})
+        .catch(error => res.status(400).json({error})));
+}
+
 exports.deleteUser = async (req, res) => {
     await user.destroy({ where: { id: req.params.idUser } })
         .then(function (isDeleted) {
