@@ -10,19 +10,23 @@
     "crypto": "^1.0.1",
     "debug": "~2.6.9",
     "express": "~4.16.1",
+    "express-validator": "^6.12.0",
     "http-errors": "~1.6.3",
     "jade": "~1.11.0",
     "lodash": "^4.17.21",
+    "mongoose": "^5.12.13",
     "morgan": "~1.9.1",
-    "sequelize": "^6.6.2",
-    "sequelize-cli": "^6.2.0",
+    "mysql2": "^2.2.5",
+    "sequelize": "^5.22.3",
     "tedious": "^11.0.9"
   },
   "devDependencies": {
     "config.json": "0.0.4",
+    "cors": "^2.8.5",
     "dotenv": "^10.0.0",
     "jsonwebtoken": "^8.5.1",
     "mssql": "^7.1.3",
+    "sequelize-cli": "^6.2.0",
     "winston": "^3.3.3"
   }
 }
