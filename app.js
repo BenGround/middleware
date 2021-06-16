@@ -9,7 +9,9 @@ const userRegisterRouter = require('./routes/register');
 const loggerTest = require("./models/logger");
 const {checkJWT} = require("./services/tokenService");
 require('dotenv').config()
+const cors = require('cors')
 
+app.use(cors())
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
