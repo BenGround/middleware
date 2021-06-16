@@ -13,7 +13,7 @@ exports.getUsers = async (req, res) => {
 }
 
 exports.getUserById = async (req, res) => {
-    await Users.findOne({ where: { id: req.params.idUser } })
+    await Users.findOne({ include: { model: Roles }, where: { id: req.params.idUser }})
         .then(User => {
             if (User) {
                 res.status(200).json({'result': true, 'user': User})
@@ -54,7 +54,6 @@ exports.createUser = async (req, res) => {
 }
 
 exports.editUser = async (req, res) => {
-    let userData = await Users.findOne({ where: { id:req.params.idUser } });
     let userCount = await Users.findAndCountAll({ where: { id:req.params.idUser } });
 
     if (userCount.count > 0) {
@@ -69,11 +68,12 @@ exports.editUser = async (req, res) => {
             dataToUpdate.lastname = req.body.lastname;
         }
 
+        dataToUpdate.updatedAt = Date.now();
+
         Users.update(dataToUpdate, {where: {id: req.params.idUser}})
             .then(function (result) {
-                console.log(userData)
                 if (result[0] === 1) {
-                    res.status(200).json({'result': true, 'user': userData})
+                    res.status(200).json({'result': true})
                 } else {
                     res.status(200).json({'result': false, 'message': 'Data provided arn\'t right.'})
                 }

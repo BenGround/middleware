@@ -2,10 +2,13 @@ const express = require('express');
 const app = express();
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
-const userRouter = require('./routes/user/user');
 const apiRouter = require('./routes/api');
+const userRouter = require('./routes/user/user');
 const userConnectRouter = require('./routes/user/connect');
 const userRegisterRouter = require('./routes/user/register');
+
+const restaurantRouter = require('./routes/restaurateur');
+
 const testRouter = require('./routes/testRoute');
 require('dotenv').config()
 const mongoose = require('mongoose');
@@ -22,6 +25,7 @@ app.use('/test', testRouter);
 app.use('/api', apiRouter);
 
 app.use('/api/user', userRouter);
+app.use('/api/restaurant', restaurantRouter);
 
 const uri = 'mongodb+srv://admin:admin@cluster0.kprfz.mongodb.net/Project';
 mongoose.connect(uri,

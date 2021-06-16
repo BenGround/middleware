@@ -9,12 +9,11 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       name: {
+        unique:true,
         type: Sequelize.STRING,
         allowNull: false
       }
     });
-
-    await queryInterface.sequelize.query('insert into roles (name) values (\'USER\'), (\'RESTAURATEUR\'), (\'LIVREUR\'), (\'DEVELOPPEUR\'), (\'COMMERCIAL\'), (\'TECHNIQUE\')')
   },
   down: async (queryInterface, Sequelize) => {
     await queryInterface.dropTable('Roles');

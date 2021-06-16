@@ -16,7 +16,7 @@ const tokenChecking = function (req, res, next) {
                 message: 'Token is not valid'
             })
         } else {
-            // app.set('userId', verify.user.id)
+            req.app.set('userId', verify.user)
             next()
         }
     } else {

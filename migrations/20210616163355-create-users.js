@@ -10,6 +10,7 @@ module.exports = {
         type: DataTypes.INTEGER
       },
       email: {
+        unique: true,
         type: DataTypes.STRING,
         allowNull: false
       },
@@ -47,7 +48,6 @@ module.exports = {
         type: DataTypes.DATE,
       }
     });
-    await queryInterface.sequelize.query('insert into users (email, password, firstname, lastname, roleId) values (\'ben@gmail.ocm\', \'03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4\', \'ben\', \'ben\', 2)')
   },
   down: async (queryInterface, Sequelize) => {
     await queryInterface.dropTable('Users');

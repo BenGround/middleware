@@ -22,6 +22,7 @@ module.exports = (sequelize, DataTypes) => {
   };
   Users.init({
     email: {
+      unique: true,
       type: DataTypes.STRING,
       allowNull: false
     },

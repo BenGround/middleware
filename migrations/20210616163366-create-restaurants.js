@@ -8,6 +8,11 @@ module.exports = {
         primaryKey: true,
         type: DataTypes.INTEGER
       },
+      name: {
+        unique: true,
+        type: DataTypes.STRING,
+        allowNull: false
+      },
       address: {
         type: DataTypes.STRING,
         allowNull: false
@@ -30,7 +35,6 @@ module.exports = {
         defaultValue: DataTypes.literal('CURRENT_TIMESTAMP')
       },
       updatedAt: {
-        allowNull: false,
         type: DataTypes.DATE
       }
     });

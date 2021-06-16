@@ -13,7 +13,7 @@ const checkJWT = (token) => {
         check = jwt.verify(token, process.env.JWT_SECRET);
     } catch(err) {
         if(err.name === 'TokenExpiredError') {
-            check = 'renew';
+            check = 'tokenExpired';
         } else {
             check = false;
         }

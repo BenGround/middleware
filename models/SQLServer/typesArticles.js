@@ -19,6 +19,7 @@ module.exports = (sequelize, DataTypes) => {
   };
   TypesArticles.init({
     name: {
+      unique: true,
       type: DataTypes.STRING,
       allowNull: false
     }
