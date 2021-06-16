@@ -18,6 +18,11 @@ if (config.use_env_variable) {
 const models = [
   require('./SQLServer/users')(sequelize, Sequelize),
   require('./SQLServer/roles')(sequelize, Sequelize),
+  require('./SQLServer/restaurants')(sequelize, Sequelize),
+  require('./SQLServer/typesArticles')(sequelize, Sequelize),
+  require('./SQLServer/articles')(sequelize, Sequelize),
+  require('./SQLServer/menus')(sequelize, Sequelize),
+  require('./SQLServer/menusArticles')(sequelize, Sequelize),
 ];
 
 models.forEach(model => {
@@ -26,7 +31,7 @@ models.forEach(model => {
 
 models.forEach(model => {
   if (db[model.name].associate) {
-    console.log("entered");
+    console.log("Load Model... =>", model.name);
     db[model.name].associate(db);
   }
 });

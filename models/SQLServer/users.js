@@ -13,6 +13,11 @@ module.exports = (sequelize, DataTypes) => {
       this.belongsTo(models.Roles, {
         foreignKey: 'roleId'
       })
+      this.hasOne(models.Restaurants, {
+        allowNull: false,
+        type: DataTypes.UUID,
+        foreignKey: 'restaurateurId'
+      })
     }
   };
   Users.init({
