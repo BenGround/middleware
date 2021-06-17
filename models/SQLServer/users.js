@@ -16,7 +16,8 @@ module.exports = (sequelize, DataTypes) => {
       this.hasOne(models.Restaurants, {
         allowNull: false,
         type: DataTypes.UUID,
-        foreignKey: 'restaurateurId'
+        foreignKey: 'restaurateurId',
+        onDelete: 'cascade'
       })
     }
   };

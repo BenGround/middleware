@@ -4,7 +4,12 @@ const Users = model['Users'];
 const hasRestaurateurRole = async function (req, res, next) {
     let idUser =  req.app.get('userId');
 
-    if (idUser === "tokenExpired") {
+    if (idUser === undefined) {
+        return res.status(500).json({
+            success: false,
+            message: 'User invalid'
+        })
+    }  else if (idUser === "tokenExpired") {
         return res.status(500).json({
             success: false,
             message: 'Token expired'

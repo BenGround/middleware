@@ -19,7 +19,9 @@ module.exports = {
         references: {
           model: 'Restaurants',
           key: 'id'
-        }
+        },
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE'
       },
     });
   },

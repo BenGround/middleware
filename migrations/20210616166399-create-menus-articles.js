@@ -14,7 +14,9 @@ module.exports = {
         references: {
           model: 'Menus',
           key: 'id'
-        }
+        },
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE'
       },
       articlesId: {
         type: DataTypes.INTEGER,
@@ -22,7 +24,7 @@ module.exports = {
         references: {
           model: 'Articles',
           key: 'id'
-        }
+        },
       },
     });
   },

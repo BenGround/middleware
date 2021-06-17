@@ -7,6 +7,8 @@ router.get('/all', restaurantController.getRestaurants);
 router.get('/:idRestaurant(\\d+)', restaurantController.getRestaurantById);
 
 router.use(hasRestaurateurRole)
-router.get('/create', restaurantController.createRestaurant);
+router.post('/create', restaurantController.createRestaurant);
+router.post('/edit/:idRestaurant(\\d+)', restaurantController.editRestaurant);
+router.post('/delete/:idRestaurant(\\d+)', restaurantController.deleteRestaurant);
 
 module.exports = router;

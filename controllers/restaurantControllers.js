@@ -38,38 +38,39 @@ exports.createRestaurant = async (req, res) => {
 }
 
 exports.editRestaurant = async (req, res) => {
-    let userData = await Users.findOne({ where: { id:req.params.idUser } });
-    let userCount = await Users.findAndCountAll({ where: { id:req.params.idUser } });
+    let restaurantCount = await Restaurants.findAndCountAll({ where: { id:req.params.idRestaurant } });
 
-    if (userCount.count > 0) {
+    if (restaurantCount.count > 0) {
         let dataToUpdate = {};
-        if (req.body.email) {
-            dataToUpdate.email = req.body.email;
-        } else if (req.body.password) {
-            dataToUpdate.password = crypto.createHash("sha256").update(req.body.password).digest("hex");
-        } else if (req.body.firstname) {
-            dataToUpdate.firstname = req.body.firstname;
-        } else if (req.body.lastname) {
-            dataToUpdate.lastname = req.body.lastname;
+
+        if (req.body.name) {
+            dataToUpdate.name = req.body.name;
+        } else if (req.body.address) {
+            dataToUpdate.address = req.body.address;
+        } else if (req.body.city) {
+            dataToUpdate.city = req.body.city;
+        } else if (req.body.restaurateurId) {
+            dataToUpdate.restaurateurId = req.body.restaurateurId;
+        } else if (req.body.menusId) {
+            dataToUpdate.menusId = req.body.menusId;
         }
 
-        Users.update(dataToUpdate, {where: {id: req.params.idUser}})
+        Restaurants.update(dataToUpdate, {where: {id: req.params.idRestaurant}})
             .then(function (result) {
-                console.log(userData)
                 if (result[0] === 1) {
-                    res.status(200).json({'result': true, 'user': userData})
+                    res.status(200).json({'result': true})
                 } else {
                     res.status(200).json({'result': false, 'message': 'Data provided arn\'t right.'})
                 }
             })
             .catch(error => res.status(400).json({error}));
     } else {
-        res.status(200).json({'result': false, 'message': 'User not found.'});
+        res.status(200).json({'result': false, 'message': 'Restaurant not found.'});
     }
 }
 
 exports.deleteRestaurant = async (req, res) => {
-    await Users.destroy({ where: { id: req.params.idUser } })
+    await Restaurants.destroy({ where: { id: req.params.idRestaurant } })
         .then(function (isDeleted) {
             if (isDeleted) {
                 res.status(200).json({'result': true})

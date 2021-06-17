@@ -16,12 +16,14 @@ module.exports = (sequelize, DataTypes) => {
       this.hasMany(models.Menus, {
         allowNull: false,
         type: DataTypes.UUID,
-        foreignKey: 'restaurantsId'
+        foreignKey: 'restaurantsId',
+        onDelete: 'cascade'
       })
       this.hasMany(models.Articles, {
         allowNull: false,
         type: DataTypes.UUID,
-        foreignKey: 'restaurantsId'
+        foreignKey: 'restaurantsId',
+        onDelete: 'cascade'
       })
     }
   };
