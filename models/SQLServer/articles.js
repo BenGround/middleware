@@ -16,8 +16,14 @@ module.exports = (sequelize, DataTypes) => {
       this.belongsTo(models.Restaurants, {
         foreignKey: 'restaurantsId'
       })
-
-      this.belongsToMany(models.Menus, { through: "MenuArticles" });
+      this.belongsToMany(models.Menus, {
+        through: "MenuArticles",
+        foreignKey: 'menuId'
+      });
+      this.belongsToMany(models.Orders, {
+        through: 'OrdersArticles',
+        foreignKey: 'ordersId'
+      });
     }
   };
   Articles.init({
@@ -32,8 +38,7 @@ module.exports = (sequelize, DataTypes) => {
       defaultValue: DataTypes.literal('CURRENT_TIMESTAMP')
     },
     updatedAt: {
-      allowNull: false,
-      type: DataTypes.DATE
+      type: DataTypes.DATE,
     }
   }, {
     sequelize,

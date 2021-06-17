@@ -19,6 +19,12 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'restaurateurId',
         onDelete: 'cascade'
       })
+      this.hasMany(models.Orders, {
+        allowNull: false,
+        type: DataTypes.UUID,
+        foreignKey: 'userId',
+        onDelete: 'cascade'
+      })
     }
   };
   Users.init({
@@ -39,6 +45,14 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false
     },
+    address: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    city: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
     isSuspended: {
       defaultValue: 0,
       allowNull: false,
@@ -46,11 +60,11 @@ module.exports = (sequelize, DataTypes) => {
     },
     createdAt: {
       allowNull: false,
-      type: DataTypes.DATE
+      type: DataTypes.DATE,
+      defaultValue: DataTypes.literal('CURRENT_TIMESTAMP')
     },
     updatedAt: {
-      allowNull: false,
-      type: DataTypes.DATE
+      type: DataTypes.DATE,
     }
   }, {
     sequelize,

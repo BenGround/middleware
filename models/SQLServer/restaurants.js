@@ -25,6 +25,12 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'restaurantsId',
         onDelete: 'cascade'
       })
+      this.hasMany(models.Orders, {
+        allowNull: false,
+        type: DataTypes.UUID,
+        foreignKey: 'restaurantsId',
+        onDelete: 'cascade'
+      })
     }
   };
   Restaurants.init({

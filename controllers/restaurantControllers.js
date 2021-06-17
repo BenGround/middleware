@@ -15,7 +15,7 @@ exports.getRestaurantById = async (req, res) => {
             if (Restaurant) {
                 res.status(200).json({'result': true, 'restaurant': Restaurant})
             } else {
-                res.status(200).json({'result': false, 'message': 'Restaurant not find.'})
+                res.status(500).json({'result': false, 'message': 'Restaurant not find.'})
             }
         })
         .catch(error => res.status(400).json({error}));
@@ -55,17 +55,19 @@ exports.editRestaurant = async (req, res) => {
             dataToUpdate.menusId = req.body.menusId;
         }
 
+        dataToUpdate.updatedAt = Date.now();
+
         Restaurants.update(dataToUpdate, {where: {id: req.params.idRestaurant}})
             .then(function (result) {
                 if (result[0] === 1) {
                     res.status(200).json({'result': true})
                 } else {
-                    res.status(200).json({'result': false, 'message': 'Data provided arn\'t right.'})
+                    res.status(500).json({'result': false, 'message': 'Data provided arn\'t right.'})
                 }
             })
             .catch(error => res.status(400).json({error}));
     } else {
-        res.status(200).json({'result': false, 'message': 'Restaurant not found.'});
+        res.status(500).json({'result': false, 'message': 'Restaurant not found.'});
     }
 }
 
@@ -75,7 +77,7 @@ exports.deleteRestaurant = async (req, res) => {
             if (isDeleted) {
                 res.status(200).json({'result': true})
             } else {
-                res.status(200).json({'result': false, 'message': 'User doesn\'t exist'})
+                res.status(500).json({'result': false, 'message': 'User doesn\'t exist'})
             }
         })
         .catch(error => res.status(400).json({'result': false, 'error': error}));

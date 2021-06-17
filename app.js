@@ -8,6 +8,7 @@ const userConnectRouter = require('./routes/user/connect');
 const userRegisterRouter = require('./routes/user/register');
 
 const restaurantRouter = require('./routes/restaurateur');
+const utilisateurRouter = require('./routes/utilisateur');
 
 const testRouter = require('./routes/testRoute');
 require('dotenv').config()
@@ -25,7 +26,8 @@ app.use('/test', testRouter);
 app.use('/api', apiRouter);
 
 app.use('/api/user', userRouter);
-app.use('/api/restaurant', restaurantRouter);
+app.use('/api', restaurantRouter);
+app.use('/api', utilisateurRouter);
 
 const uri = 'mongodb+srv://admin:admin@cluster0.kprfz.mongodb.net/Project';
 mongoose.connect(uri,

@@ -1,22 +1,20 @@
 'use strict';
 module.exports = {
   up: async (queryInterface, DataTypes) => {
-    await queryInterface.createTable('MenusArticles', {
+    await queryInterface.createTable('MenuArticles', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: DataTypes.INTEGER
       },
-      menusId: {
+      menuId: {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
           model: 'Menus',
           key: 'id'
         },
-        onUpdate: 'CASCADE',
-        onDelete: 'CASCADE'
       },
       articlesId: {
         type: DataTypes.INTEGER,
@@ -25,10 +23,12 @@ module.exports = {
           model: 'Articles',
           key: 'id'
         },
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE'
       },
     });
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('MenusArticles');
+    await queryInterface.dropTable('MenuArticles');
   }
 };

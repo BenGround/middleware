@@ -18,7 +18,7 @@ exports.getUserById = async (req, res) => {
             if (User) {
                 res.status(200).json({'result': true, 'user': User})
             } else {
-                res.status(200).json({'result': false, 'message': 'User not find.'})
+                res.status(500).json({'result': false, 'message': 'User not find.'})
             }
         })
     .catch(error => res.status(400).json({error}));
@@ -30,7 +30,7 @@ exports.getUserByEmail = async (req, res) => {
             if (User) {
                 res.status(200).json({'result': true, 'user': User})
             } else {
-                res.status(200).json({'result': false, 'message': 'User not find.'})
+                res.status(500).json({'result': false, 'message': 'User not find.'})
             }
         })
         .catch(error => res.status(400).json({error}));
@@ -42,7 +42,9 @@ exports.createUser = async (req, res) => {
             password: crypto.createHash("sha256").update(req.body.password).digest("hex"),
             firstname: req.body.firstname,
             lastname: req.body.lastname,
-            roleId: req.body.roleId
+            roleId: req.body.roleId,
+            address: req.body.address,
+            city: req.body.city
         }
     )
     .then(User => res.status(200).json({
@@ -66,6 +68,10 @@ exports.editUser = async (req, res) => {
             dataToUpdate.firstname = req.body.firstname;
         } else if (req.body.lastname) {
             dataToUpdate.lastname = req.body.lastname;
+        } else if (req.body.address) {
+            dataToUpdate.address = req.body.address;
+        } else if (req.body.city) {
+            dataToUpdate.city = req.body.city;
         }
 
         dataToUpdate.updatedAt = Date.now();
@@ -75,12 +81,12 @@ exports.editUser = async (req, res) => {
                 if (result[0] === 1) {
                     res.status(200).json({'result': true})
                 } else {
-                    res.status(200).json({'result': false, 'message': 'Data provided arn\'t right.'})
+                    res.status(500).json({'result': false, 'message': 'Data provided arn\'t right.'})
                 }
             })
             .catch(error => res.status(400).json({error}));
     } else {
-        res.status(200).json({'result': false, 'message': 'User not found.'});
+        res.status(500).json({'result': false, 'message': 'User not found.'});
     }
 }
 
@@ -90,7 +96,7 @@ exports.deleteUser = async (req, res) => {
             if (isDeleted) {
                 res.status(200).json({'result': true})
             } else {
-                res.status(200).json({'result': false, 'message': 'User doesn\'t exist'})
+                res.status(500).json({'result': false, 'message': 'User doesn\'t exist'})
             }
         })
         .catch(error => res.status(400).json({'result': false, 'error': error}));
@@ -110,5 +116,11 @@ exports.connectUser = async (req, res) => {
         }
     }
 
-    res.status(200).json({'result': false,'message': 'User not found.'})
+    res.status(500).json({'result': false,'message': 'User not found.'})
+}
+
+exports.getRoleName = async (req, res) => {
+    await Roles.findOne({ where: { id: req.params.idRole } })
+        .then(Role => res.status(200).json({'result': true, 'name': Role.name}))
+        .catch(error => res.status(400).json({error}));
 }

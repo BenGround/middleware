@@ -26,6 +26,14 @@ module.exports = {
         type: DataTypes.STRING,
         allowNull: false
       },
+      address: {
+        type: DataTypes.STRING,
+        allowNull: false
+      },
+      city: {
+        type: DataTypes.STRING,
+        allowNull: false
+      },
       isSuspended: {
         type: DataTypes.BOOLEAN,
         allowNull: false,

@@ -4,7 +4,10 @@
     "password": "admin",
     "database": "cesitonplat",
     "host": "localhost",
-    "dialect": "mssql"
+    "dialect": "mssql",
+    "define": {
+      "schema": "dbo"
+    }
   },
   "test": {
     "username": "root",
