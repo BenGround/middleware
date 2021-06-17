@@ -17,16 +17,16 @@ router.get('/menu/:idRestaurant(\\d+)', menuController.getMenuById);
 router.use(hasRestaurateurRole)
 
 router.post('/restaurant/create', restaurantController.createRestaurant);
-router.post('/restaurant/edit/:idRestaurant(\\d+)', restaurantController.editRestaurant);
-router.post('/restaurant/delete/:idRestaurant(\\d+)', restaurantController.deleteRestaurant);
+router.put('/restaurant/edit/:idRestaurant(\\d+)', restaurantController.editRestaurant);
+router.delete('/restaurant/delete/:idRestaurant(\\d+)', restaurantController.deleteRestaurant);
 
 router.post('/article/create', articleController.createArticle);
-router.post('/article/edit/:idArticle(\\d+)', articleController.editArticle);
-router.post('/article/delete/:idArticle(\\d+)', articleController.deleteArticle);
+router.put('/article/edit/:idArticle(\\d+)', articleController.editArticle);
+router.delete('/article/delete/:idArticle(\\d+)', articleController.deleteArticle);
 
 router.post('/menu/create', menuController.createMenu);
-router.post('/menu/edit/:idMenu(\\d+)', menuController.editMenu);
-router.post('/menu/delete/:idMenu(\\d+)', menuController.deleteMenu);
+router.put('/menu/edit/:idMenu(\\d+)', menuController.editMenu);
+router.delete('/menu/delete/:idMenu(\\d+)', menuController.deleteMenu);
 router.post('/menu/add-articles/:idMenu(\\d+)', menuController.addArticle);
 
 module.exports = router;

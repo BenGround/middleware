@@ -7,7 +7,7 @@ const {hasRestaurateurRole} = require("../middleware/roleCheck");
 
 router.get('/order/all', orderControllers.getOrders);
 router.get('/order/:idOrder(\\d+)', orderControllers.getOrderById);
-router.post('/order/delete/:idOrder(\\d+)', orderControllers.deleteOrder);
+router.delete('/order/delete/:idOrder(\\d+)', orderControllers.deleteOrder);
 
 router.use(hasRestaurateurRole)
 
