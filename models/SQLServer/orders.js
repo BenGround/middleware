@@ -13,6 +13,9 @@ module.exports = (sequelize, DataTypes) => {
       this.belongsTo(models.Users, {
         foreignKey: 'userId'
       })
+      this.belongsTo(models.Users, {
+        foreignKey: 'deliveryUserId'
+      })
       this.belongsTo(models.Restaurants, {
         foreignKey: 'restaurantsId'
       });
@@ -24,14 +27,12 @@ module.exports = (sequelize, DataTypes) => {
         through: 'OrdersMenus',
         foreignKey: 'menusId'
       });
+      this.belongsTo(models.OrdersStatus, {
+        foreignKey: 'ordersStatusId'
+      })
     }
   };
   Orders.init({
-    status: {
-      unique: true,
-      type: DataTypes.INTEGER,
-      allowNull: false
-    },
     createdAt: {
       allowNull: false,
       type: DataTypes.DATE,

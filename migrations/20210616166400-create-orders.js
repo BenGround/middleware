@@ -26,10 +26,20 @@ module.exports = {
           key: 'id'
         },
       },
-      status: {
-        unique: true,
+      deliveryUserId: {
         type: DataTypes.INTEGER,
-        allowNull: false
+        references: {
+          model: 'Users',
+          key: 'id'
+        },
+      },
+      ordersStatusId: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        references: {
+          model: 'OrdersStatus',
+          key: 'id'
+        }
       },
       createdAt: {
         allowNull: false,

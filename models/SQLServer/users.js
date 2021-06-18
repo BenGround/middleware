@@ -24,6 +24,12 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.UUID,
         foreignKey: 'userId',
         onDelete: 'cascade'
+      }),
+      this.hasMany(models.Orders, {
+        allowNull: false,
+        type: DataTypes.UUID,
+        foreignKey: 'deliveryUserId',
+        onDelete: 'cascade'
       })
     }
   };
