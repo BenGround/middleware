@@ -2,6 +2,7 @@ const { userTokenValid } = require("../middleware/roleCheck");
 const { createErrorResponse, createResponse } = require("../services/responseService");
 const _ = require('lodash')
 const crypto = require('crypto')
+const logs = require('../models/MongoDB/logs');
 const message = require('../config/messages')
 const tokenService = require('../services/tokenService')
 const model = require('../models/index')
@@ -119,7 +120,9 @@ exports.connectUser = async (req, res) => {
 
         if (_.isEqual(password, userPassword)) {
             let token = tokenService.createJWT(UserResult.rows[0].id)
+            let fullname = UserResult.rows[0].firstname + ' ' + UserResult.rows[0].lastname;
 
+            await logs.create({message: message.logConnectionUser(fullname), createdAt: Date.now()});
             createResponse(res, true, {token: token})
         }
     }

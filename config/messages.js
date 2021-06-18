@@ -9,6 +9,10 @@ message.permission_denied = 'Vous n\'avez pas la permission.';
 message.mongodb_connection_success = 'Connexion à MongoDB  Commune réussie !';
 message.mongodb_connection_error = 'Connexion à MongoDB Commune échouée !';
 
+message.logConnectionUser = (username) => {
+    return 'L\'utilisateur ' + username + ' s\'est connecté(e).'
+}
+
 message.notFoundObject = (objectName) => {
     return 'L\'objet ' + objectName + ' n\'extiste pas.';
 }
