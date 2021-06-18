@@ -5,7 +5,7 @@ const { createErrorResponse, createResponse } = require("../services/responseSer
 
 const secureUser = async function (res, idUser) {
     if (idUser === undefined) {
-        createResponse(res, false, {}, message.notFoundObject('Utilisateur'))
+        createResponse(res, false, {}, '[TokenCheck] ' + message.notFoundObject('Utilisateur'))
     }  else if (idUser === "tokenExpired") {
         createResponse(res, false, {}, message.invalid_token);
     } else {
@@ -26,7 +26,7 @@ const hasRestaurateurRole = async function (req, res, next) {
                         return createResponse(res, false, {}, message.permission_denied);
                     }
                 } else {
-                    return createResponse(res, false, {}, message.notFoundObject('Utilisateur'))
+                    // return createResponse(res, false, {}, message.notFoundObject('Utilisateur'))
                 }
             })
             .catch(error => createErrorResponse(res, error))
