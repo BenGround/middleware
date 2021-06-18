@@ -26,7 +26,7 @@ const hasRestaurateurRole = async function (req, res, next) {
                         return createResponse(res, false, {}, message.permission_denied);
                     }
                 } else {
-                    // return createResponse(res, false, {}, message.notFoundObject('Utilisateur'))
+                    return createResponse(res, false, {}, message.notFoundObject('Utilisateur'))
                 }
             })
             .catch(error => createErrorResponse(res, error))
