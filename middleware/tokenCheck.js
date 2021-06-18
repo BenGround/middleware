@@ -1,5 +1,7 @@
 const loggerTest = require("../models/logger");
 const {checkJWT} = require("../services/tokenService");
+const message = require('../messages')
+const { createResponse } = require("../services/responseService");
 
 const tokenChecking = function (req, res, next) {
     let token = req.headers.authorization
@@ -11,19 +13,13 @@ const tokenChecking = function (req, res, next) {
 
         if (!verify) {
             loggerTest.info('Bad token')
-            return res.status(500).json({
-                success: false,
-                message: 'Token is not valid'
-            })
+            return createResponse(res, false, {}, message.invalid_token);
         } else {
             req.app.set('userId', verify.user)
             next()
         }
     } else {
-        return res.status(500).json({
-            success: false,
-            message: 'Token not provided'
-        })
+        return createResponse(res, false, {}, message.token_not_provided);
     }
 }
 

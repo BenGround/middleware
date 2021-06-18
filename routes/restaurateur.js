@@ -9,10 +9,10 @@ router.get('/restaurant/all', restaurantController.getRestaurants);
 router.get('/restaurant/:idRestaurant(\\d+)', restaurantController.getRestaurantById);
 
 router.get('/article/all', articleController.getArticles);
-router.get('/article/:idRestaurant(\\d+)', articleController.getArticleById);
+router.get('/article/:idArticle(\\d+)', articleController.getArticleById);
 
 router.get('/menu/all', menuController.getMenus);
-router.get('/menu/:idRestaurant(\\d+)', menuController.getMenuById);
+router.get('/menu/:idMenu(\\d+)', menuController.getMenuById);
 
 router.use(hasRestaurateurRole)
 

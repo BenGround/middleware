@@ -4,6 +4,8 @@ const Restaurants = model['Restaurants'];
 const Articles = model['Articles'];
 const Menus = model['Menus'];
 const message = require('../messages')
+const { createErrorResponse, createResponse } = require("../services/responseService");
+const modelName = 'Commande';
 
 exports.getOrders = async (req, res) => {
     await Orders.findAll(
@@ -17,8 +19,8 @@ exports.getOrders = async (req, res) => {
             }],
         }
     )
-        .then(Orders => res.status(200).json(Orders))
-        .catch(error => res.status(400).json({error}));
+        .then(Orders => createResponse(res, true, Orders))
+        .catch(error => createErrorResponse(res, error));
 }
 
 exports.getOrderById = async (req, res) => {
@@ -36,12 +38,12 @@ exports.getOrderById = async (req, res) => {
     )
         .then(Order => {
             if (Order) {
-                res.status(200).json({'result': true, 'order': Order})
+                createResponse(res, true, Order)
             } else {
-                res.status(500).json({'result': false, 'message': 'Order not found.'})
+                createResponse(res, false, {}, message.notFoundObject(modelName))
             }
         })
-        .catch(error => res.status(400).json({error}));
+        .catch(error => createErrorResponse(res, error));
 }
 
 exports.createOrder = async (req, res) => {
@@ -51,7 +53,6 @@ exports.createOrder = async (req, res) => {
     for (const articleId of req.body.articlesIds) {
         await Articles.findOne({ where: { id:articleId }})
             .then(Article => {
-                console.log(Article)
                 if ((Article === null) || (parseInt(restaurantId) !== parseInt(Article.restaurantsId))) {
                     result = false;
                 }
@@ -83,14 +84,11 @@ exports.createOrder = async (req, res) => {
                     Order.addMenus(Articles.findOne({where: {id: menuId}}));
                 }
 
-                res.status(200).json({
-                    'order': Order,
-                    'message': message.order_created_success
-                })
+                createResponse(res, true, Order, message.createObject(modelName))
             })
-            .catch(error => res.status(400).json({error}));
+            .catch(error => createErrorResponse(res, error));
     } else {
-        res.status(500).json({'result': false, 'message': 'Certain(s) article(s) ou menu(s) n\'appartiennent pas au restaurant.'})
+        createResponse(res, false, {}, message.wrong_articles_in_order)
     }
 }
 
@@ -98,10 +96,10 @@ exports.deleteOrder = async (req, res) => {
     await Orders.destroy({ where: { id: req.params.idOrder } })
         .then(function (isDeleted) {
             if (isDeleted) {
-                res.status(200).json({'result': true})
+                createResponse(res, true)
             } else {
-                res.status(500).json({'result': false, 'message': 'Order doesn\'t exist'})
+                createResponse(res, false, {}, message.notFoundObject(modelName))
             }
         })
-        .catch(error => res.status(400).json({'result': false, 'error': error}));
+        .catch(error => createErrorResponse(res, error));
 }

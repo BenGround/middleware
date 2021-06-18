@@ -4,6 +4,8 @@ const Restaurants = model['Restaurants'];
 const TypesArticles = model['TypesArticles'];
 const Menus = model['Menus'];
 const message = require('../messages')
+const {createErrorResponse, createResponse} = require("../services/responseService");
+const modelName = 'Article';
 
 exports.getArticles = async (req, res) => {
     await Articles.findAll(
@@ -17,8 +19,8 @@ exports.getArticles = async (req, res) => {
             }],
         }
     )
-        .then(Articles => res.status(200).json(Articles))
-        .catch(error => res.status(400).json({error}));
+        .then(Articles => createResponse(res, true, Articles))
+        .catch(error => createErrorResponse(res, error));
 }
 
 
@@ -37,12 +39,12 @@ exports.getArticleById = async (req, res) => {
     )
         .then(Article => {
             if (Article) {
-                res.status(200).json({'result': true, 'menu': Article})
+                createResponse(res, true, Article)
             } else {
-                res.status(500).json({'result': false, 'message': 'Article not found.'})
+                createResponse(res, false, {}, message.notFoundObject(modelName))
             }
         })
-        .catch(error => res.status(400).json({error}));
+        .catch(error => createErrorResponse(res, error));
 }
 
 exports.createArticle = async (req, res) => {
@@ -52,11 +54,8 @@ exports.createArticle = async (req, res) => {
             restaurantsId: req.body.restaurantsId
         }
     )
-        .then(Article => res.status(200).json({
-            'article': Article,
-            'message': message.article_created_success
-        }))
-        .catch(error => res.status(400).json({error}));
+        .then(Article => createResponse(res, true, Article, message.createObject(modelName)))
+        .catch(error => createErrorResponse(res, error));
 }
 
 exports.editArticle = async (req, res) => {
@@ -78,14 +77,14 @@ exports.editArticle = async (req, res) => {
         Articles.update(dataToUpdate, {where: {id: req.params.idArticle}})
             .then(function (result) {
                 if (result[0] === 1) {
-                    res.status(200).json({'result': true})
+                    createResponse(res, true)
                 } else {
-                    res.status(500).json({'result': false, 'message': 'Data provided arn\'t right.'})
+                    createResponse(res, false, {}, message.wrong_data)
                 }
             })
-            .catch(error => res.status(400).json({error}));
+            .catch(error => createErrorResponse(res, error));
     } else {
-        res.status(500).json({'result': false, 'message': 'Article not found.'});
+        createResponse(res, false, {}, message.notFoundObject(modelName))
     }
 }
 
@@ -93,10 +92,10 @@ exports.deleteArticle = async (req, res) => {
     await Articles.destroy({ where: { id: req.params.idArticle } })
         .then(function (isDeleted) {
             if (isDeleted) {
-                res.status(200).json({'result': true})
+                createResponse(res, true)
             } else {
-                res.status(200).json({'result': false, 'message': 'Article doesn\'t exist'})
+                createResponse(res, false, {}, message.notFoundObject(modelName))
             }
         })
-        .catch(error => res.status(400).json({'result': false, 'error': error}));
+        .catch(error => createErrorResponse(res, error));
 }

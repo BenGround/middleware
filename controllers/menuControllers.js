@@ -3,6 +3,8 @@ const Menus = model['Menus'];
 const Restaurants = model['Restaurants'];
 const Articles = model['Articles'];
 const message = require('../messages')
+const { createErrorResponse, createResponse } = require("../services/responseService");
+const modelName = 'Menu';
 
 exports.getMenus = async (req, res) => {
     await Menus.findAll({ include: [{
@@ -10,8 +12,8 @@ exports.getMenus = async (req, res) => {
         }, {
             model: Articles
         }], })
-        .then(Menus => res.status(200).json(Menus))
-        .catch(error => res.status(400).json({error}));
+        .then(Menus => createResponse(res, true, Menus))
+        .catch(error => createErrorResponse(res, error));
 }
 
 exports.getMenuById = async (req, res) => {
@@ -22,12 +24,12 @@ exports.getMenuById = async (req, res) => {
         }] })
         .then(Menu => {
             if (Menu) {
-                res.status(200).json({'result': true, 'menu': Menu})
+                createResponse(res, true, Menu)
             } else {
-                res.status(500).json({'result': false, 'message': 'Menu not found.'})
+                createResponse(res, false, {}, message.notFoundObject(modelName))
             }
         })
-        .catch(error => res.status(400).json({error}));
+        .catch(error => createErrorResponse(res, error));
 }
 
 exports.createMenu = async (req, res) => {
@@ -36,11 +38,8 @@ exports.createMenu = async (req, res) => {
             restaurantsId: req.body.restaurantsId
         }
     )
-        .then(Menu => res.status(200).json({
-            'menu': Menu,
-            'message': message.menu_created_success
-        }))
-        .catch(error => res.status(400).json({error}));
+        .then(Menu => createResponse(res, true, Menu, message.createObject(modelName)))
+        .catch(error => createErrorResponse(res, error));
 }
 
 exports.editMenu = async (req, res) => {
@@ -60,14 +59,14 @@ exports.editMenu = async (req, res) => {
         Menus.update(dataToUpdate, {where: {id: req.params.idMenu}})
             .then(function (result) {
                 if (result[0] === 1) {
-                    res.status(200).json({'result': true})
+                    createResponse(res, true)
                 } else {
-                    res.status(500).json({'result': false, 'message': 'Data provided arn\'t right.'})
+                    createResponse(res, false, {}, message.wrong_data)
                 }
             })
-            .catch(error => res.status(400).json({error}));
+            .catch(error => createErrorResponse(res, error));
     } else {
-        res.status(500).json({'result': false, 'message': 'Menu not found.'});
+        createResponse(res, false, {}, message.notFoundObject(modelName))
     }
 }
 
@@ -75,17 +74,16 @@ exports.deleteMenu = async (req, res) => {
     await Menus.destroy({ where: { id: req.params.idMenu } })
         .then(function (isDeleted) {
             if (isDeleted) {
-                res.status(200).json({'result': true})
+                createResponse(res, true)
             } else {
-                res.status(500).json({'result': false, 'message': 'Menu doesn\'t exist'})
+                createResponse(res, false, {}, message.notFoundObject(modelName))
             }
         })
-        .catch(error => res.status(400).json({'result': false, 'error': error}));
+        .catch(error => createErrorResponse(res, error));
 }
 
 exports.addArticle = async (req, res) => {
     let MenuObj = await Menus.findOne({ where: { id: req.params.idMenu },include: { model: Restaurants  } })
-
     let articlesIds = req.body.articlesIds;
 
     if (articlesIds !== undefined && Array.isArray(articlesIds)) {
@@ -93,8 +91,8 @@ exports.addArticle = async (req, res) => {
             MenuObj.addArticles(await Articles.findOne({where: {id: articleId}}));
         }
 
-        res.status(200).json({'result': true, 'message': 'Les article(s) ont été ajoutée(s)'})
+        createResponse(res, true, {}, message.articles_added_success)
     } else {
-        res.status(500).json({'result': false, 'message': 'Bad information given.'})
+        createResponse(res, false, {}, message.wrong_data)
     }
 }

@@ -5,35 +5,37 @@ const model = require('../models/index')
 const Users = model['Users'];
 const Roles = model['Roles'];
 const message = require('../messages')
+const { createErrorResponse, createResponse } = require("../services/responseService");
+const modelName = 'Utilisateur';
 
 exports.getUsers = async (req, res) => {
     await Users.findAll({ include: { model: Roles } })
-        .then(Users => res.status(200).json(Users))
-        .catch(error => res.status(400).json({error}));
+        .then(Users => createResponse(res, true, Users))
+        .catch(error => createErrorResponse(res, error));
 }
 
 exports.getUserById = async (req, res) => {
     await Users.findOne({ include: { model: Roles }, where: { id: req.params.idUser }})
         .then(User => {
             if (User) {
-                res.status(200).json({'result': true, 'user': User})
+                createResponse(res, true, User)
             } else {
-                res.status(500).json({'result': false, 'message': 'User not find.'})
+                createResponse(res, false, {}, message.notFoundObject(modelName))
             }
         })
-    .catch(error => res.status(400).json({error}));
+    .catch(error => createErrorResponse(res, error));
 }
 
 exports.getUserByEmail = async (req, res) => {
     await Users.findOne({ where: { email: req.body.email } })
         .then(User => {
             if (User) {
-                res.status(200).json({'result': true, 'user': User})
+                createResponse(res, true, Restaurant)
             } else {
-                res.status(500).json({'result': false, 'message': 'User not find.'})
+                createResponse(res, false, {}, message.notFoundObject(modelName))
             }
         })
-        .catch(error => res.status(400).json({error}));
+        .catch(error => createErrorResponse(res, error));
 }
 
 exports.createUser = async (req, res) => {
@@ -47,12 +49,12 @@ exports.createUser = async (req, res) => {
             city: req.body.city
         }
     )
-    .then(User => res.status(200).json({
-        'user': User,
-        'token': tokenService.createJWT(User.id),
-        'message': message.user_created_success
-    }))
-    .catch(error => res.status(400).json({error}));
+    .then(User => createResponse(res,
+        true,
+        {user: User, token: tokenService.createJWT(User.id)},
+        message.createObject(modelName))
+    )
+    .catch(error => createErrorResponse(res, error));
 }
 
 exports.editUser = async (req, res) => {
@@ -64,6 +66,8 @@ exports.editUser = async (req, res) => {
             dataToUpdate.email = req.body.email;
         } else if (req.body.password) {
             dataToUpdate.password = crypto.createHash("sha256").update(req.body.password).digest("hex");
+        } else if (req.body.roleId) {
+            dataToUpdate.roleId = req.body.roleId;
         } else if (req.body.firstname) {
             dataToUpdate.firstname = req.body.firstname;
         } else if (req.body.lastname) {
@@ -79,14 +83,14 @@ exports.editUser = async (req, res) => {
         Users.update(dataToUpdate, {where: {id: req.params.idUser}})
             .then(function (result) {
                 if (result[0] === 1) {
-                    res.status(200).json({'result': true})
+                    createResponse(res, true)
                 } else {
-                    res.status(500).json({'result': false, 'message': 'Data provided arn\'t right.'})
+                    createResponse(res, false, {}, message.wrong_data)
                 }
             })
-            .catch(error => res.status(400).json({error}));
+            .catch(error => createErrorResponse(res, error));
     } else {
-        res.status(500).json({'result': false, 'message': 'User not found.'});
+        createResponse(res, false, {}, message.notFoundObject(modelName))
     }
 }
 
@@ -94,16 +98,17 @@ exports.deleteUser = async (req, res) => {
     await Users.destroy({ where: { id: req.params.idUser } })
         .then(function (isDeleted) {
             if (isDeleted) {
-                res.status(200).json({'result': true})
+                createResponse(res, true)
             } else {
-                res.status(500).json({'result': false, 'message': 'User doesn\'t exist'})
+                createResponse(res, false, {}, message.notFoundObject(modelName))
             }
         })
-        .catch(error => res.status(400).json({'result': false, 'error': error}));
+        .catch(error => createErrorResponse(res, error));
 }
 
 exports.connectUser = async (req, res) => {
-    const UserResult = await Users.findAndCountAll({ where: { email: req.body.email } });
+    const UserResult = await Users.findAndCountAll({ where: { email: req.body.email } })
+        .catch(error => createErrorResponse(res, error));;
 
     if (UserResult.count > 0) {
         const userPassword = UserResult.rows[0].password;
@@ -112,15 +117,15 @@ exports.connectUser = async (req, res) => {
         if (_.isEqual(password, userPassword)) {
             let token = tokenService.createJWT(UserResult.rows[0].id)
 
-            res.status(200).json({'result': true,'token': token})
+            createResponse(res, true, {token: token})
         }
     }
 
-    res.status(500).json({'result': false,'message': 'User not found.'})
+    createResponse(res, false, {}, message.notFoundObject(modelName))
 }
 
 exports.getRoleName = async (req, res) => {
     await Roles.findOne({ where: { id: req.params.idRole } })
-        .then(Role => res.status(200).json({'result': true, 'name': Role.name}))
-        .catch(error => res.status(400).json({error}));
+        .then(Role => createResponse(res, true, Role.name))
+        .catch(error => createErrorResponse(res, error));
 }

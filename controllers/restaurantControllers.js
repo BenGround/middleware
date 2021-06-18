@@ -2,23 +2,25 @@ const model = require('../models/index')
 const Users = model['Users'];
 const Restaurants = model['Restaurants'];
 const message = require('../messages')
+const { createErrorResponse, createResponse } = require("../services/responseService");
+const modelName = 'Restaurant';
 
 exports.getRestaurants = async (req, res) => {
     await Restaurants.findAll({ include: { model: Users } })
-        .then(Restaurants => res.status(200).json(Restaurants))
-        .catch(error => res.status(400).json({error}));
+        .then(Restaurants => createResponse(res, true, Restaurants))
+        .catch(error => createErrorResponse(res, error));
 }
 
 exports.getRestaurantById = async (req, res) => {
     await Restaurants.findOne({ include: { model: Users }, where: { id: req.params.idRestaurant } })
         .then(Restaurant => {
             if (Restaurant) {
-                res.status(200).json({'result': true, 'restaurant': Restaurant})
+                createResponse(res, true, Restaurant)
             } else {
-                res.status(500).json({'result': false, 'message': 'Restaurant not find.'})
+                createResponse(res, false, {}, message.notFoundObject(modelName))
             }
         })
-        .catch(error => res.status(400).json({error}));
+        .catch(error => createErrorResponse(res, error));
 }
 
 exports.createRestaurant = async (req, res) => {
@@ -30,11 +32,8 @@ exports.createRestaurant = async (req, res) => {
             menusId: req.body.menusId
         }
     )
-        .then(Restaurants => res.status(200).json({
-            'restaurant': Restaurants,
-            'message': message.restaurant_created_success
-        }))
-        .catch(error => res.status(400).json({error}));
+        .then(Restaurant => createResponse(res, true, Restaurant, message.createObject(modelName)))
+        .catch(error => createErrorResponse(res, error));
 }
 
 exports.editRestaurant = async (req, res) => {
@@ -60,14 +59,14 @@ exports.editRestaurant = async (req, res) => {
         Restaurants.update(dataToUpdate, {where: {id: req.params.idRestaurant}})
             .then(function (result) {
                 if (result[0] === 1) {
-                    res.status(200).json({'result': true})
+                    createResponse(res, true)
                 } else {
-                    res.status(500).json({'result': false, 'message': 'Data provided arn\'t right.'})
+                    createResponse(res, false, {}, message.wrong_data)
                 }
             })
-            .catch(error => res.status(400).json({error}));
+            .catch(error => createErrorResponse(res, error));
     } else {
-        res.status(500).json({'result': false, 'message': 'Restaurant not found.'});
+        createResponse(res, false, {}, message.notFoundObject(modelName))
     }
 }
 
@@ -75,10 +74,10 @@ exports.deleteRestaurant = async (req, res) => {
     await Restaurants.destroy({ where: { id: req.params.idRestaurant } })
         .then(function (isDeleted) {
             if (isDeleted) {
-                res.status(200).json({'result': true})
+                createResponse(res, true)
             } else {
-                res.status(500).json({'result': false, 'message': 'User doesn\'t exist'})
+                createResponse(res, false, {}, message.notFoundObject(modelName))
             }
         })
-        .catch(error => res.status(400).json({'result': false, 'error': error}));
+        .catch(error => createErrorResponse(res, error));
 }
