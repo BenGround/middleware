@@ -1,10 +1,11 @@
 const model = require('../models/index')
+const message = require('../config/messages')
+const _ = require('lodash')
+const {createErrorResponse, createResponse} = require("../services/responseService");
 const Articles = model['Articles'];
 const Restaurants = model['Restaurants'];
 const TypesArticles = model['TypesArticles'];
 const Menus = model['Menus'];
-const message = require('../messages')
-const {createErrorResponse, createResponse} = require("../services/responseService");
 const modelName = 'Article';
 
 exports.getArticles = async (req, res) => {
@@ -76,7 +77,7 @@ exports.editArticle = async (req, res) => {
 
         Articles.update(dataToUpdate, {where: {id: req.params.idArticle}})
             .then(function (result) {
-                if (result[0] === 1) {
+                if (_.isEqual(result[0], 1)) {
                     createResponse(res, true)
                 } else {
                     createResponse(res, false, {}, message.wrong_data)

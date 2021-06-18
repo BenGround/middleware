@@ -2,7 +2,7 @@
   "development": {
     "username": "admin",
     "password": "admin",
-    "database": "cesitonplat",
+    "database": "cesitonplat_dev",
     "host": "localhost",
     "dialect": "mssql",
     "define": {
@@ -10,17 +10,23 @@
     }
   },
   "test": {
-    "username": "root",
-    "password": null,
-    "database": "database_test",
-    "host": "127.0.0.1",
-    "dialect": "mssql"
+    "username": "admin",
+    "password": "admin",
+    "database": "cesitonplat_test",
+    "host": "localhost",
+    "dialect": "mssql",
+    "define": {
+      "schema": "dbo"
+    }
   },
   "production": {
-    "username": "root",
-    "password": null,
-    "database": "database_production",
-    "host": "127.0.0.1",
-    "dialect": "mssql"
+    "username": "admin",
+    "password": "admin",
+    "database": "cesitonplat_prod",
+    "host": "localhost",
+    "dialect": "mssql",
+    "define": {
+      "schema": "dbo"
+    }
   }
 }

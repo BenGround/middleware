@@ -1,12 +1,13 @@
+const _ = require('lodash')
 const model = require('../models/index')
+const message = require('../config/messages')
 const Users = model['Users'];
-const message = require('../messages')
 const { createErrorResponse, createResponse } = require("../services/responseService");
 
 const secureUser = async function (res, idUser) {
-    if (idUser === undefined) {
+    if (_.isUndefined(idUser)) {
         createResponse(res, false, {}, '[TokenCheck] ' + message.notFoundObject('Utilisateur'))
-    }  else if (idUser === "tokenExpired") {
+    }  else if (_.isEqual(idUser, "tokenExpired")) {
         createResponse(res, false, {}, message.invalid_token);
     } else {
         return true;
@@ -20,7 +21,7 @@ const hasRestaurateurRole = async function (req, res, next) {
         await Users.findOne({where: {id: idUser}})
             .then(User => {
                 if (User) {
-                    if (parseInt(User.roleId) === parseInt(process.env.RESTAURATEUR)) {
+                    if (_.isEqual(parseInt(User.roleId), parseInt(process.env.RESTAURATEUR))) {
                         next();
                     } else {
                         return createResponse(res, false, {}, message.permission_denied);

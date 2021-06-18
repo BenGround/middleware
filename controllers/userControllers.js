@@ -1,11 +1,11 @@
-const crypto = require('crypto')
+const { createErrorResponse, createResponse } = require("../services/responseService");
 const _ = require('lodash')
+const crypto = require('crypto')
+const message = require('../config/messages')
 const tokenService = require('../services/tokenService')
 const model = require('../models/index')
 const Users = model['Users'];
 const Roles = model['Roles'];
-const message = require('../messages')
-const { createErrorResponse, createResponse } = require("../services/responseService");
 const modelName = 'Utilisateur';
 
 exports.getUsers = async (req, res) => {
@@ -82,7 +82,7 @@ exports.editUser = async (req, res) => {
 
         Users.update(dataToUpdate, {where: {id: req.params.idUser}})
             .then(function (result) {
-                if (result[0] === 1) {
+                if (_.isEqual(result[0], 1)) {
                     createResponse(res, true)
                 } else {
                     createResponse(res, false, {}, message.wrong_data)

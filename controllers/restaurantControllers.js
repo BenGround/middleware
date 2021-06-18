@@ -1,8 +1,9 @@
 const model = require('../models/index')
+const message = require('../config/messages')
+const _ = require('lodash')
+const { createErrorResponse, createResponse } = require("../services/responseService");
 const Users = model['Users'];
 const Restaurants = model['Restaurants'];
-const message = require('../messages')
-const { createErrorResponse, createResponse } = require("../services/responseService");
 const modelName = 'Restaurant';
 
 exports.getRestaurants = async (req, res) => {
@@ -58,7 +59,7 @@ exports.editRestaurant = async (req, res) => {
 
         Restaurants.update(dataToUpdate, {where: {id: req.params.idRestaurant}})
             .then(function (result) {
-                if (result[0] === 1) {
+                if (_.isEqual(result[0], 1)) {
                     createResponse(res, true)
                 } else {
                     createResponse(res, false, {}, message.wrong_data)

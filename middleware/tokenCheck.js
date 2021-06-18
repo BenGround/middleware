@@ -1,6 +1,6 @@
 const loggerTest = require("../models/logger");
-const {checkJWT} = require("../services/tokenService");
-const message = require('../messages')
+const message = require('../config/messages')
+const { checkJWT } = require("../services/tokenService");
 const { createResponse } = require("../services/responseService");
 
 const tokenChecking = function (req, res, next) {

@@ -1,9 +1,10 @@
 const model = require('../models/index')
+const message = require('../config/messages')
+const _ = require('lodash')
+const { createErrorResponse, createResponse } = require("../services/responseService");
 const Menus = model['Menus'];
 const Restaurants = model['Restaurants'];
 const Articles = model['Articles'];
-const message = require('../messages')
-const { createErrorResponse, createResponse } = require("../services/responseService");
 const modelName = 'Menu';
 
 exports.getMenus = async (req, res) => {
@@ -58,7 +59,7 @@ exports.editMenu = async (req, res) => {
 
         Menus.update(dataToUpdate, {where: {id: req.params.idMenu}})
             .then(function (result) {
-                if (result[0] === 1) {
+                if (_.isEqual(result[0], 1)) {
                     createResponse(res, true)
                 } else {
                     createResponse(res, false, {}, message.wrong_data)
@@ -86,7 +87,7 @@ exports.addArticle = async (req, res) => {
     let MenuObj = await Menus.findOne({ where: { id: req.params.idMenu },include: { model: Restaurants  } })
     let articlesIds = req.body.articlesIds;
 
-    if (articlesIds !== undefined && Array.isArray(articlesIds)) {
+    if (!_.isUndefined(articlesIds) && Array.isArray(articlesIds)) {
         for (const articleId of articlesIds) {
             MenuObj.addArticles(await Articles.findOne({where: {id: articleId}}));
         }

@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+const _ = require('lodash')
 
 const createJWT = (user) => {
     return jwt.sign({
@@ -12,7 +13,7 @@ const checkJWT = (token) => {
     try {
         check = jwt.verify(token, process.env.JWT_SECRET);
     } catch(err) {
-        if(err.name === 'TokenExpiredError') {
+        if(_.isEqual(err.name, 'TokenExpiredError')) {
             check = 'tokenExpired';
         } else {
             check = false;

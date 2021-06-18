@@ -1,10 +1,11 @@
 const model = require('../models/index')
+const message = require('../config/messages')
+const _ = require('lodash')
+const { createErrorResponse, createResponse } = require("../services/responseService");
 const Orders = model['Orders'];
 const Restaurants = model['Restaurants'];
 const Articles = model['Articles'];
 const Menus = model['Menus'];
-const message = require('../messages')
-const { createErrorResponse, createResponse } = require("../services/responseService");
 const modelName = 'Commande';
 
 exports.getOrders = async (req, res) => {
@@ -53,7 +54,7 @@ exports.createOrder = async (req, res) => {
     for (const articleId of req.body.articlesIds) {
         await Articles.findOne({ where: { id:articleId }})
             .then(Article => {
-                if ((Article === null) || (parseInt(restaurantId) !== parseInt(Article.restaurantsId))) {
+                if ((_.isNull(Article)) || !(_.isEqual(parseInt(restaurantId), parseInt(Article.restaurantsId)))) {
                     result = false;
                 }
             })
@@ -62,7 +63,7 @@ exports.createOrder = async (req, res) => {
     for (const menuId of req.body.menusIds) {
         await Menus.findOne({ where: { id:menuId }})
             .then(Menus => {
-                if (parseInt(restaurantId) !== parseInt(Menus.restaurantsId)) {
+                if (!_.isEqual(parseInt(restaurantId), parseInt(Menus.restaurantsId))) {
                     result = false;
                 }
             })
