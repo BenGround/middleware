@@ -14,14 +14,14 @@ const secureUser = async function (res, idUser) {
     }
 }
 
-const hasRestaurateurRole = async function (req, res, next) {
+const hasRole = async function (req, res, next, roleId) {
     let idUser =  req.app.get('userId');
 
     if (await secureUser(res, idUser)) {
         await Users.findOne({where: {id: idUser}})
             .then(User => {
                 if (User) {
-                    if (_.isEqual(parseInt(User.roleId), parseInt(process.env.RESTAURATEUR))) {
+                    if (_.isEqual(parseInt(User.roleId), parseInt(roleId))) {
                         next();
                     } else {
                         return createResponse(res, false, {}, message.permission_denied);
@@ -34,4 +34,16 @@ const hasRestaurateurRole = async function (req, res, next) {
     }
 }
 
-module.exports = { hasRestaurateurRole };
+const hasRestaurateurRole = function (req, res, next) {
+    return hasRole(req, res, next, process.env.ROLE_RESTAURATEUR)
+}
+
+const userTokenValid = function (req, res) {
+    if (_.isEqual(parseInt(req.params.idUser), parseInt(req.app.get('userId')))) {
+        return true;
+    } else {
+        return createResponse(res, false, {}, message.permission_denied);
+    }
+}
+
+module.exports = { hasRestaurateurRole, userTokenValid };

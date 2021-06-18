@@ -3,7 +3,7 @@ const router = express.Router();
 const restaurantController = require('../controllers/restaurantControllers');
 const articleController = require("../controllers/articleControllers");
 const menuController = require("../controllers/menuControllers");
-const {hasRestaurateurRole} = require("../middleware/roleCheck");
+const { hasRestaurateurRole } = require("../middleware/roleCheck");
 
 router.get('/restaurant/all', restaurantController.getRestaurants);
 router.get('/restaurant/:idRestaurant(\\d+)', restaurantController.getRestaurantById);

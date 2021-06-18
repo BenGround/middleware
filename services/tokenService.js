@@ -4,7 +4,7 @@ const _ = require('lodash')
 const createJWT = (user) => {
     return jwt.sign({
         user: user
-    }, process.env.JWT_SECRET, {expiresIn: '1h'})
+    }, process.env.JWT_SECRET, {expiresIn: '10h'})
 }
 
 const checkJWT = (token) => {

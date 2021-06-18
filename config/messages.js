@@ -5,7 +5,7 @@ message.wrong_articles_in_order = 'Certain(s) article(s) ou menu(s) n\'appartien
 message.wrong_data = 'Les informations renseignées ne sont pas correctes.';
 message.invalid_token = 'Le token n\'est pas valide';
 message.token_not_provided = 'Le token n\'a pas été renseigné.'
-message.permission_denied = 'Vous, n\'avez pas la permission.';
+message.permission_denied = 'Vous n\'avez pas la permission.';
 message.mongodb_connection_success = 'Connexion à MongoDB  Commune réussie !';
 message.mongodb_connection_error = 'Connexion à MongoDB Commune échouée !';
 
@@ -14,7 +14,7 @@ message.notFoundObject = (objectName) => {
 }
 
 message.createObject = (objectName) => {
-    return 'L\'objet ' + objectName + '  a bien été créé.;'
+    return 'L\'objet ' + objectName + '  a bien été créé.';
 }
 
 module.exports = message;

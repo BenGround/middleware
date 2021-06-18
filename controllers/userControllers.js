@@ -1,3 +1,4 @@
+const { userTokenValid } = require("../middleware/roleCheck");
 const { createErrorResponse, createResponse } = require("../services/responseService");
 const _ = require('lodash')
 const crypto = require('crypto')
@@ -95,6 +96,8 @@ exports.editUser = async (req, res) => {
 }
 
 exports.deleteUser = async (req, res) => {
+    userTokenValid(req, res)
+
     await Users.destroy({ where: { id: req.params.idUser } })
         .then(function (isDeleted) {
             if (isDeleted) {
