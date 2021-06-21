@@ -123,7 +123,13 @@ exports.connectUser = async (req, res) => {
             let fullname = UserResult.rows[0].firstname + ' ' + UserResult.rows[0].lastname;
 
             await logs.create({message: message.logConnectionUser(fullname), createdAt: Date.now()});
-            createResponse(res, true, {token: token})
+            createResponse(res, true,
+                {
+                    token: token,
+                    email: UserResult.rows[0].email,
+                    roleId: UserResult.rows[0].roleId
+                }
+            )
         }
     }
 
