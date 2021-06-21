@@ -112,7 +112,7 @@ exports.deleteUser = async (req, res) => {
 
 exports.connectUser = async (req, res) => {
     const UserResult = await Users.findAndCountAll({ where: { email: req.body.email } })
-        .catch(error => createErrorResponse(res, error));;
+        .catch(error => createErrorResponse(res, error));
 
     if (UserResult.count > 0) {
         const userPassword = UserResult.rows[0].password;
