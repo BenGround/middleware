@@ -127,7 +127,8 @@ exports.connectUser = async (req, res) => {
                 {
                     token: token,
                     email: UserResult.rows[0].email,
-                    roleId: UserResult.rows[0].roleId
+                    roleId: UserResult.rows[0].roleId,
+                    userId: UserResult.rows[0].id
                 }
             )
         }
