@@ -97,3 +97,24 @@ exports.addArticle = async (req, res) => {
         createResponse(res, false, {}, message.wrong_data)
     }
 }
+
+exports.getMenuByRestaurantId = async (req, res) => {
+    await Menus.findAll(
+        {
+            where: { restaurantsId: req.params.idRestaurant },
+            include: [{
+                model: Restaurants
+            }, {
+                model: Articles
+            }],
+        }
+    )
+        .then(Menus => {
+            if (Menus) {
+                createResponse(res, true, Menus)
+            } else {
+                createResponse(res, false, {}, message.notFoundObject(modelName))
+            }
+        })
+        .catch(error => createErrorResponse(res, error));
+}

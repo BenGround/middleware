@@ -15,6 +15,7 @@ router.get('/articlesbyrestaurant/:idRestaurant(\\d+)', articleController.getArt
 
 router.get('/menu/all', menuController.getMenus);
 router.get('/menu/:idMenu(\\d+)', menuController.getMenuById);
+router.get('/menusbyrestaurant/:idRestaurant(\\d+)', menuController.getMenuByRestaurantId);
 
 router.use(hasRole(roles.ROLE_RESTAURATEUR))
 
