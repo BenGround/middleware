@@ -100,3 +100,26 @@ exports.deleteArticle = async (req, res) => {
         })
         .catch(error => createErrorResponse(res, error));
 }
+
+exports.getArticleByRestaurantId = async (req, res) => {
+    await Articles.findAll(
+        {
+            where: { restaurantsId: req.params.idRestaurant },
+            include: [{
+                model: Restaurants
+            }, {
+                model: TypesArticles
+            },{
+                model: Menus
+            }],
+        }
+    )
+        .then(Articles => {
+            if (Articles) {
+                createResponse(res, true, Articles)
+            } else {
+                createResponse(res, false, {}, message.notFoundObject(modelName))
+            }
+        })
+        .catch(error => createErrorResponse(res, error));
+}
