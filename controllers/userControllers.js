@@ -64,13 +64,16 @@ exports.editUser = async (req, res) => {
 
     if (userCount.count > 0) {
         let dataToUpdate = {};
+
         if (req.body.email) {
             dataToUpdate.email = req.body.email;
         } else if (req.body.password) {
             dataToUpdate.password = crypto.createHash("sha256").update(req.body.password).digest("hex");
         } else if (req.body.roleId) {
             dataToUpdate.roleId = req.body.roleId;
-        } else if (req.body.firstname) {
+        }
+
+        if (req.body.firstname) {
             dataToUpdate.firstname = req.body.firstname;
         } else if (req.body.lastname) {
             dataToUpdate.lastname = req.body.lastname;
@@ -126,9 +129,7 @@ exports.connectUser = async (req, res) => {
             createResponse(res, true,
                 {
                     token: token,
-                    email: UserResult.rows[0].email,
-                    roleId: UserResult.rows[0].roleId,
-                    userId: UserResult.rows[0].id
+                    user:  UserResult.rows[0]
                 }
             )
         }
