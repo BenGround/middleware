@@ -3,7 +3,8 @@ const router = express.Router();
 const restaurantController = require('../controllers/restaurantControllers');
 const articleController = require("../controllers/articleControllers");
 const menuController = require("../controllers/menuControllers");
-const { hasRestaurateurRole } = require("../middleware/roleCheck");
+const { roles } = require("../config/roles");
+const { hasRole } = require("../middleware/roleCheck");
 
 router.get('/restaurant/all', restaurantController.getRestaurants);
 router.get('/restaurant/:idRestaurant(\\d+)', restaurantController.getRestaurantById);
@@ -14,7 +15,7 @@ router.get('/article/:idArticle(\\d+)', articleController.getArticleById);
 router.get('/menu/all', menuController.getMenus);
 router.get('/menu/:idMenu(\\d+)', menuController.getMenuById);
 
-router.use(hasRestaurateurRole)
+router.use(hasRole(roles.ROLE_RESTAURATEUR))
 
 router.post('/restaurant/create', restaurantController.createRestaurant);
 router.put('/restaurant/edit/:idRestaurant(\\d+)', restaurantController.editRestaurant);

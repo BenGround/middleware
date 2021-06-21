@@ -9,6 +9,7 @@ const userConnectRouter = require('./routes/user/connect');
 const userRegisterRouter = require('./routes/user/register');
 const restaurantRouter = require('./routes/restaurateur');
 const utilisateurRouter = require('./routes/utilisateur');
+const logsRouter = require('./routes/logs');
 require('./config/mongoDBServer');
 require('dotenv').config()
 
@@ -23,5 +24,6 @@ app.use('/api', apiRouter);
 app.use('/api/user', userRouter);
 app.use('/api', restaurantRouter);
 app.use('/api', utilisateurRouter);
+app.use('/api/logs', logsRouter);
 
 module.exports = app;

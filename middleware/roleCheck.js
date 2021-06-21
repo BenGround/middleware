@@ -4,7 +4,7 @@ const message = require('../config/messages')
 const Users = model['Users'];
 const { createErrorResponse, createResponse } = require("../services/responseService");
 
-const secureUser = async function (res, idUser) {
+const secureUser = function (res, idUser) {
     if (_.isUndefined(idUser)) {
         createResponse(res, false, {}, '[TokenCheck] ' + message.notFoundObject('Utilisateur'))
     }  else if (_.isEqual(idUser, "tokenExpired")) {
@@ -14,28 +14,28 @@ const secureUser = async function (res, idUser) {
     }
 }
 
-const hasRole = async function (req, res, next, roleId) {
-    let idUser =  req.app.get('userId');
+const hasRole = function (roleId) {
+    return (request, response, next) => {
+        let idUser = request.app.get('userId');
 
-    if (await secureUser(res, idUser)) {
-        await Users.findOne({where: {id: idUser}})
-            .then(User => {
-                if (User) {
-                    if (_.isEqual(parseInt(User.roleId), parseInt(roleId))) {
-                        next();
+        if (secureUser(response, idUser)) {
+            Users.findOne({where: {id: idUser}})
+                .then(User => {
+                    if (User) {
+                        console.log(roleId)
+                        console.log(User.roleId)
+                        if (_.isEqual(parseInt(User.roleId), parseInt(roleId))) {
+                            next();
+                        } else {
+                            return createResponse(response, false, {}, message.permission_denied);
+                        }
                     } else {
-                        return createResponse(res, false, {}, message.permission_denied);
+                        return createResponse(response, false, {}, message.notFoundObject('Utilisateur'))
                     }
-                } else {
-                    return createResponse(res, false, {}, message.notFoundObject('Utilisateur'))
-                }
-            })
-            .catch(error => createErrorResponse(res, error))
+                })
+                .catch(error => createErrorResponse(response, error))
+        }
     }
-}
-
-const hasRestaurateurRole = function (req, res, next) {
-    return hasRole(req, res, next, process.env.ROLE_RESTAURATEUR)
 }
 
 const userTokenValid = function (req, res) {
@@ -46,4 +46,4 @@ const userTokenValid = function (req, res) {
     }
 }
 
-module.exports = { hasRestaurateurRole, userTokenValid };
+module.exports = { userTokenValid, hasRole };
