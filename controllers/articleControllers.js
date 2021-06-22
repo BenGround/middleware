@@ -52,7 +52,8 @@ exports.createArticle = async (req, res) => {
     await Articles.create({
             name: req.body.name,
             typesArticlesId: req.body.typesArticlesId,
-            restaurantsId: req.body.restaurantsId
+            restaurantsId: req.body.restaurantsId,
+            price: req.body.price
         }
     )
         .then(Article => createResponse(res, true, Article, message.createObject(modelName)))
@@ -71,6 +72,8 @@ exports.editArticle = async (req, res) => {
             dataToUpdate.typesArticlesId = req.body.typesArticlesId;
         } else if (req.body.restaurantsId) {
             dataToUpdate.restaurantsId = req.body.restaurantsId;
+        } else if (req.body.price) {
+            dataToUpdate.price = req.body.price;
         }
 
         dataToUpdate.updatedAt = Date.now();
