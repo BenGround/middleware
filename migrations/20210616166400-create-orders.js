@@ -36,6 +36,7 @@ module.exports = {
       ordersStatusId: {
         type: DataTypes.INTEGER,
         allowNull: false,
+        defaultValue: 1,
         references: {
           model: 'OrdersStatus',
           key: 'id'

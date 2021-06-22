@@ -22,8 +22,6 @@ const hasRole = function (roleId) {
             Users.findOne({where: {id: idUser}})
                 .then(User => {
                     if (User) {
-                        console.log(roleId)
-                        console.log(User.roleId)
                         if (_.isEqual(parseInt(User.roleId), parseInt(roleId))) {
                             next();
                         } else {

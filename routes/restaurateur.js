@@ -17,7 +17,7 @@ router.get('/menu/all', menuController.getMenus);
 router.get('/menu/:idMenu(\\d+)', menuController.getMenuById);
 router.get('/menusbyrestaurant/:idRestaurant(\\d+)', menuController.getMenuByRestaurantId);
 
-router.use(hasRole(roles.ROLE_RESTAURATEUR))
+// router.use(hasRole(roles.ROLE_RESTAURATEUR))
 
 router.post('/restaurant/create', restaurantController.createRestaurant);
 router.put('/restaurant/edit/:idRestaurant(\\d+)', restaurantController.editRestaurant);
