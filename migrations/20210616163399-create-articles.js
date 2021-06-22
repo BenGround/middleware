@@ -21,6 +21,10 @@ module.exports = {
           key: 'id'
         }
       },
+      price: {
+        type: DataTypes.FLOAT,
+        allowNull: false
+      },
       restaurantsId: {
         type: DataTypes.INTEGER,
         allowNull: false,

@@ -104,3 +104,27 @@ exports.deleteOrder = async (req, res) => {
         })
         .catch(error => createErrorResponse(res, error));
 }
+
+
+exports.getOrdersByUserId = async (req, res) => {
+    await Orders.findAll(
+        {
+            where: { userId: req.params.idUser },
+            include: [{
+                model: Restaurants
+            }, {
+                model: Articles
+            },{
+                model: Menus
+            }],
+        }
+    )
+        .then(Orders => {
+            if (Orders) {
+                createResponse(res, true, Orders)
+            } else {
+                createResponse(res, false, {}, message.notFoundObject(modelName))
+            }
+        })
+        .catch(error => createErrorResponse(res, error));
+}

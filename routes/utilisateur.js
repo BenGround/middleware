@@ -5,6 +5,7 @@ const { roles } = require("../config/roles");
 const { hasRole } = require("../middleware/roleCheck");
 
 router.get('/order/all', orderControllers.getOrders);
+router.get('/ordersbyuser/:idUser(\\d+)', orderControllers.getOrdersByUserId);
 router.get('/order/:idOrder(\\d+)', orderControllers.getOrderById);
 router.post('/order/create', orderControllers.createOrder);
 
