@@ -22,7 +22,7 @@ module.exports = (sequelize, DataTypes) => {
       });
       this.belongsToMany(models.Orders, {
         through: 'OrdersArticles',
-        foreignKey: 'ordersId'
+        foreignKey: 'articlesId'
       });
     }
   };

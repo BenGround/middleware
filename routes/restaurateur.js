@@ -12,6 +12,7 @@ router.get('/restaurant/:idRestaurant(\\d+)', restaurantController.getRestaurant
 router.get('/article/all', articleController.getArticles);
 router.get('/article/:idArticle(\\d+)', articleController.getArticleById);
 router.get('/articlesbyrestaurant/:idRestaurant(\\d+)', articleController.getArticleByRestaurantId);
+router.get('/article/types', articleController.getTypesArticles);
 
 router.get('/menu/all', menuController.getMenus);
 router.get('/menu/:idMenu(\\d+)', menuController.getMenuById);

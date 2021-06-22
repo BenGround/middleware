@@ -19,7 +19,7 @@ module.exports = (sequelize, DataTypes) => {
       });
       this.belongsToMany(models.Orders, {
         through: 'OrdersMenus',
-        foreignKey: 'ordersId'
+        foreignKey: 'menusId'
       });
     }
   };

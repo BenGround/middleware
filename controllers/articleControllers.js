@@ -123,3 +123,15 @@ exports.getArticleByRestaurantId = async (req, res) => {
         })
         .catch(error => createErrorResponse(res, error));
 }
+
+exports.getTypesArticles = async (req, res) => {
+    await TypesArticles.findAll()
+        .then(TypesArticles => {
+            if (TypesArticles) {
+                createResponse(res, true, TypesArticles)
+            } else {
+                createResponse(res, false, {}, message.notFoundObject('TypesArticles'))
+            }
+        })
+        .catch(error => createErrorResponse(res, error));
+}

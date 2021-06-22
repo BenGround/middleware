@@ -51,23 +51,28 @@ exports.createOrder = async (req, res) => {
     let result = true;
     let restaurantId = req.body.restaurantsId;
 
-    for (const articleId of req.body.articlesIds) {
-        await Articles.findOne({ where: { id:articleId }})
-            .then(Article => {
-                if ((_.isNull(Article)) || !(_.isEqual(parseInt(restaurantId), parseInt(Article.restaurantsId)))) {
-                    result = false;
-                }
-            })
+    if (req.body.articlesIds) {
+        for (const articleId of req.body.articlesIds) {
+            await Articles.findOne({ where: { id:articleId }})
+                .then(Article => {
+                    if ((_.isNull(Article)) || !(_.isEqual(parseInt(restaurantId), parseInt(Article.restaurantsId)))) {
+                        result = false;
+                    }
+                })
+        }
     }
 
-    for (const menuId of req.body.menusIds) {
-        await Menus.findOne({ where: { id:menuId }})
-            .then(Menus => {
-                if (!_.isEqual(parseInt(restaurantId), parseInt(Menus.restaurantsId))) {
-                    result = false;
-                }
-            })
+    if (req.body.menusIds) {
+        for (const menuId of req.body.menusIds) {
+            await Menus.findOne({ where: { id:menuId }})
+                .then(Menus => {
+                    if (!_.isEqual(parseInt(restaurantId), parseInt(Menus.restaurantsId))) {
+                        result = false;
+                    }
+                })
+        }
     }
+
 
     if (result) {
         await Orders.create({
@@ -77,12 +82,21 @@ exports.createOrder = async (req, res) => {
             }
         )
             .then(Order => {
-                for (const articleId of req.body.articlesIds) {
-                    Order.addArticles(Articles.findOne({where: {id: articleId}}));
+
+                if (req.body.articlesIds) {
+                    for (const articleId of req.body.articlesIds) {
+                        Articles.findOne({where: {id: articleId}}).then(article => {
+                            article.addOrders(Order)
+                        });
+                    }
                 }
 
-                for (const menuId of req.body.menusIds) {
-                    Order.addMenus(Articles.findOne({where: {id: menuId}}));
+                if (req.body.menusIds) {
+                    for (const menuId of req.body.menusIds) {
+                        Menus.findOne({where: {id: menuId}}).then(menu => {
+                            Order.addMenus(1)
+                        });
+                    }
                 }
 
                 createResponse(res, true, Order, message.createObject(modelName))
