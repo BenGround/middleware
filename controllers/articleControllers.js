@@ -114,7 +114,7 @@ exports.deleteArticle = async (req, res) => {
 exports.getArticleByRestaurantId = async (req, res) => {
     await Articles.findAll(
         {
-            where: { restaurantsId: req.params.idRestaurant, isDelete: false },
+            where: { restaurantsId: req.params.idRestaurant, isDeleted: false },
             include: [{
                 model: Restaurants
             }, {
