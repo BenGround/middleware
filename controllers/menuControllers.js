@@ -101,6 +101,8 @@ exports.editMenu = async (req, res) => {
                     dataToUpdate.name = req.body.name;
                 } else if (req.body.restaurantsId) {
                     dataToUpdate.restaurantsId = req.body.restaurantsId;
+                } else if (req.body.price) {
+                    dataToUpdate.price = req.body.price;
                 }
 
                 dataToUpdate.updatedAt = Date.now();
