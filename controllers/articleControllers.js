@@ -11,6 +11,7 @@ const modelName = 'Article';
 exports.getArticles = async (req, res) => {
     await Articles.findAll(
         {
+            where: { isDeleted: false },
             include: [{
                 model: Restaurants
             }, {
@@ -28,7 +29,7 @@ exports.getArticles = async (req, res) => {
 exports.getArticleById = async (req, res) => {
     await Articles.findOne(
         {
-            where: { id:req.params.idArticle },
+            where: { id:req.params.idArticle, isDeleted: false },
             include: [{
                 model: Restaurants
             }, {
@@ -61,7 +62,7 @@ exports.createArticle = async (req, res) => {
 }
 
 exports.editArticle = async (req, res) => {
-    let articleCount = await Articles.findAndCountAll({ where: { id:req.params.idArticle } });
+    let articleCount = await Articles.findAndCountAll({ where: { id:req.params.idArticle, isDeleted: false } });
 
     if (articleCount.count > 0) {
         let dataToUpdate = {};
@@ -93,21 +94,27 @@ exports.editArticle = async (req, res) => {
 }
 
 exports.deleteArticle = async (req, res) => {
-    await Articles.destroy({ where: { id: req.params.idArticle } })
-        .then(function (isDeleted) {
-            if (isDeleted) {
-                createResponse(res, true)
-            } else {
-                createResponse(res, false, {}, message.notFoundObject(modelName))
-            }
-        })
-        .catch(error => createErrorResponse(res, error));
+    let articleCount = await Articles.findAndCountAll({ where: { id:req.params.idArticle, isDeleted: false } });
+
+    if (articleCount.count > 0) {
+        Articles.update({isDeleted: true, updatedAt: Date.now()}, {where: {id: req.params.idArticle}})
+            .then(function (result) {
+                if (_.isEqual(result[0], 1)) {
+                    createResponse(res, true)
+                } else {
+                    createResponse(res, false, {}, message.wrong_data)
+                }
+            })
+            .catch(error => createErrorResponse(res, error));
+    } else {
+        createResponse(res, false, {}, message.notFoundObject(modelName))
+    }
 }
 
 exports.getArticleByRestaurantId = async (req, res) => {
     await Articles.findAll(
         {
-            where: { restaurantsId: req.params.idRestaurant },
+            where: { restaurantsId: req.params.idRestaurant, isDelete: false },
             include: [{
                 model: Restaurants
             }, {

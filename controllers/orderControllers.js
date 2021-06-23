@@ -7,11 +7,13 @@ const Restaurants = model['Restaurants'];
 const Articles = model['Articles'];
 const Menus = model['Menus'];
 const TypesArticles = model['TypesArticles'];
+const OrdersStatus = model['OrdersStatus'];
 const modelName = 'Commande';
 
 exports.getOrders = async (req, res) => {
     await Orders.findAll(
         {
+            where: { isDeleted: false },
             include: [{
                 model: Restaurants
             }, {
@@ -21,6 +23,9 @@ exports.getOrders = async (req, res) => {
                 }]
             },{
                 model: Menus
+            },
+            {
+                model: OrdersStatus
             }],
         }
     )
@@ -31,7 +36,7 @@ exports.getOrders = async (req, res) => {
 exports.getOrderById = async (req, res) => {
     await Orders.findOne(
         {
-            where: { id:req.params.idOrder },
+            where: { id:req.params.idOrder, isDeleted: false },
             include: [{
                 model: Restaurants
             }, {
@@ -41,6 +46,9 @@ exports.getOrderById = async (req, res) => {
                 }]
             },{
                 model: Menus
+            },
+            {
+                model: OrdersStatus
             }],
         }
     )
@@ -115,22 +123,27 @@ exports.createOrder = async (req, res) => {
 }
 
 exports.deleteOrder = async (req, res) => {
-    await Orders.destroy({ where: { id: req.params.idOrder } })
-        .then(function (isDeleted) {
-            if (isDeleted) {
-                createResponse(res, true)
-            } else {
-                createResponse(res, false, {}, message.notFoundObject(modelName))
-            }
-        })
-        .catch(error => createErrorResponse(res, error));
-}
+    let orderCount = await Orders.findAndCountAll({ where: { id:req.params.idOrder, isDeleted: false } });
 
+    if (orderCount.count > 0) {
+        Orders.update({isDeleted: true, updatedAt: Date.now()}, {where: {id: req.params.idOrder}})
+            .then(function (result) {
+                if (_.isEqual(result[0], 1)) {
+                    createResponse(res, true)
+                } else {
+                    createResponse(res, false, {}, message.wrong_data)
+                }
+            })
+            .catch(error => createErrorResponse(res, error));
+    } else {
+        createResponse(res, false, {}, message.notFoundObject(modelName))
+    }
+}
 
 exports.getOrdersByUserId = async (req, res) => {
     await Orders.findAll(
         {
-            where: { userId: req.params.idUser },
+            where: { userId: req.params.idUser, isDeleted: false },
             include: [{
                 model: Restaurants
             }, {
@@ -140,6 +153,9 @@ exports.getOrdersByUserId = async (req, res) => {
                 }]
             },{
                 model: Menus
+            },
+            {
+                model: OrdersStatus
             }],
         }
     )
@@ -156,11 +172,11 @@ exports.getOrdersByUserId = async (req, res) => {
 exports.getOrdersByRestaurateurId = async (req, res) => {
     let restaurantsOrders = [];
 
-    await Restaurants.findAll({where: { restaurateurId: req.params.idUser }}).then(restaurants => {
+    await Restaurants.findAll({where: { restaurateurId: req.params.idUser, isDeleted: false }}).then(restaurants => {
         restaurants.forEach(restaurant => {
             Orders.findAll(
                 {
-                    where: { restaurantsId: restaurant.id },
+                    where: { restaurantsId: restaurant.id, isDeleted: false },
                     include: [{
                         model: Restaurants
                     }, {
@@ -170,12 +186,15 @@ exports.getOrdersByRestaurateurId = async (req, res) => {
                         }]
                     },{
                         model: Menus
+                    },
+                    {
+                        model: OrdersStatus
                     }],
                 }
             )
                 .then(Orders => {
                     if (Orders) {
-                        restaurantsOrders.push({restaurant: restaurant, orders: Orders})
+                        restaurantsOrders.push({restaurant, orders: Orders})
                     }
                 })
                 .catch(error => createErrorResponse(res, error));
@@ -183,4 +202,30 @@ exports.getOrdersByRestaurateurId = async (req, res) => {
 
         setTimeout(() => { createResponse(res, true, restaurantsOrders) }, 1000);
     }).catch(error => createErrorResponse(res, error));
+}
+
+exports.changeOrderStatus = async (req, res) => {
+    let orderCount = await Orders.findAndCountAll({ where: { id:req.params.idOrder, isDeleted: false } });
+
+    if (orderCount.count > 0) {
+        let dataToUpdate = {};
+
+        if (req.body.ordersStatusId) {
+            dataToUpdate.ordersStatusId = req.body.ordersStatusId;
+        }
+
+        dataToUpdate.updatedAt = Date.now();
+
+        Orders.update(dataToUpdate, {where: {id: req.params.idOrder}})
+            .then(function (result) {
+                if (_.isEqual(result[0], 1)) {
+                    createResponse(res, true)
+                } else {
+                    createResponse(res, false, {}, message.wrong_data)
+                }
+            })
+            .catch(error => createErrorResponse(res, error));
+    } else {
+        createResponse(res, false, {}, message.notFoundObject(modelName))
+    }
 }

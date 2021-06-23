@@ -23,16 +23,17 @@ router.get('/menusbyrestaurant/:idRestaurant(\\d+)', menuController.getMenuByRes
 
 router.post('/restaurant/create', restaurantController.createRestaurant);
 router.put('/restaurant/edit/:idRestaurant(\\d+)', restaurantController.editRestaurant);
-router.delete('/restaurant/delete/:idRestaurant(\\d+)', restaurantController.deleteRestaurant);
+router.put('/restaurant/delete/:idRestaurant(\\d+)', restaurantController.deleteRestaurant);
 
 router.post('/article/create', articleController.createArticle);
 router.put('/article/edit/:idArticle(\\d+)', articleController.editArticle);
-router.delete('/article/delete/:idArticle(\\d+)', articleController.deleteArticle);
+router.put('/article/delete/:idArticle(\\d+)', articleController.deleteArticle);
 
 router.post('/menu/create', menuController.createMenu);
 router.put('/menu/edit/:idMenu(\\d+)', menuController.editMenu);
-router.delete('/menu/delete/:idMenu(\\d+)', menuController.deleteMenu);
+router.put('/menu/delete/:idMenu(\\d+)', menuController.deleteMenu);
 
 router.get('/orders/restaurateur/:idUser(\\d+)', orderControllers.getOrdersByRestaurateurId);
+router.put('/order/changestatus/:idOrder(\\d+)', orderControllers.changeOrderStatus);
 
 module.exports = router;

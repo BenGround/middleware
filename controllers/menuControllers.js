@@ -9,7 +9,9 @@ const MenuArticles = model['MenuArticles'];
 const modelName = 'Menu';
 
 exports.getMenus = async (req, res) => {
-    await Menus.findAll({ include: [{
+    await Menus.findAll({
+        where: { isDeleted: false },
+        include: [{
             model: Restaurants
         }, {
             model: Articles
@@ -19,7 +21,7 @@ exports.getMenus = async (req, res) => {
 }
 
 exports.getMenuById = async (req, res) => {
-    await Menus.findOne({ where: { id:req.params.idMenu }, include: [{
+    await Menus.findOne({ where: { id:req.params.idMenu, isDeleted: false }, include: [{
             model: Restaurants
         }, {
             model: Articles
@@ -76,7 +78,7 @@ exports.createMenu = async (req, res) => {
 }
 
 exports.editMenu = async (req, res) => {
-    let MenuCount = await Menus.findAndCountAll({ where: { id:req.params.idMenu } });
+    let MenuCount = await Menus.findAndCountAll({ where: { id:req.params.idMenu, isDeleted: false } });
 
     if (MenuCount.count > 0) {
         let result = true;
@@ -137,21 +139,27 @@ exports.editMenu = async (req, res) => {
 }
 
 exports.deleteMenu = async (req, res) => {
-    await Menus.destroy({ where: { id: req.params.idMenu } })
-        .then(function (isDeleted) {
-            if (isDeleted) {
-                createResponse(res, true)
-            } else {
-                createResponse(res, false, {}, message.notFoundObject(modelName))
-            }
-        })
-        .catch(error => createErrorResponse(res, error));
+    let MenuCount = await Menus.findAndCountAll({ where: { id:req.params.idMenu, isDeleted: false } });
+
+    if (MenuCount.count > 0) {
+        Menus.update({isDeleted: true,updatedAt: Date.now()}, {where: {id: req.params.idMenu}})
+            .then(function (result) {
+                if (_.isEqual(result[0], 1)) {
+                    createResponse(res, true)
+                } else {
+                    createResponse(res, false, {}, message.wrong_data)
+                }
+            })
+            .catch(error => createErrorResponse(res, error));
+    } else {
+        createResponse(res, false, {}, message.notFoundObject(modelName))
+    }
 }
 
 exports.getMenuByRestaurantId = async (req, res) => {
     await Menus.findAll(
         {
-            where: { restaurantsId: req.params.idRestaurant },
+            where: { restaurantsId: req.params.idRestaurant, isDeleted: false },
             include: [{
                 model: Restaurants
             }, {

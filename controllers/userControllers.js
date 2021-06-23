@@ -11,13 +11,13 @@ const Roles = model['Roles'];
 const modelName = 'Utilisateur';
 
 exports.getUsers = async (req, res) => {
-    await Users.findAll({ include: { model: Roles } })
+    await Users.findAll({ where: { isDeleted: false }, include: { model: Roles } })
         .then(Users => createResponse(res, true, Users))
         .catch(error => createErrorResponse(res, error));
 }
 
 exports.getUserById = async (req, res) => {
-    await Users.findOne({ include: { model: Roles }, where: { id: req.params.idUser }})
+    await Users.findOne({ include: { model: Roles }, where: { isDeleted: false, id: req.params.idUser }})
         .then(User => {
             if (User) {
                 createResponse(res, true, User)
@@ -29,7 +29,7 @@ exports.getUserById = async (req, res) => {
 }
 
 exports.getUserByEmail = async (req, res) => {
-    await Users.findOne({ where: { email: req.body.email } })
+    await Users.findOne({ where: { email: req.body.email, isDeleted: false } })
         .then(User => {
             if (User) {
                 createResponse(res, true, Restaurant)
@@ -60,7 +60,7 @@ exports.createUser = async (req, res) => {
 }
 
 exports.editUser = async (req, res) => {
-    let userCount = await Users.findAndCountAll({ where: { id:req.params.idUser } });
+    let userCount = await Users.findAndCountAll({ where: { id:req.params.idUser, isDeleted: false } });
 
     if (userCount.count > 0) {
         let dataToUpdate = {};
@@ -100,17 +100,22 @@ exports.editUser = async (req, res) => {
 }
 
 exports.deleteUser = async (req, res) => {
-    userTokenValid(req, res)
+    // userTokenValid(req, res)
+    let userCount = await Users.findAndCountAll({ where: { id:req.params.idUser, isDeleted: false } });
 
-    await Users.destroy({ where: { id: req.params.idUser } })
-        .then(function (isDeleted) {
-            if (isDeleted) {
-                createResponse(res, true)
-            } else {
-                createResponse(res, false, {}, message.notFoundObject(modelName))
-            }
-        })
-        .catch(error => createErrorResponse(res, error));
+    if (userCount.count > 0) {
+        Users.update({isDeleted: true, updatedAt: Date.now()}, {where: {id: req.params.idUser}})
+            .then(function (result) {
+                if (_.isEqual(result[0], 1)) {
+                    createResponse(res, true)
+                } else {
+                    createResponse(res, false, {}, message.wrong_data)
+                }
+            })
+            .catch(error => createErrorResponse(res, error));
+    } else {
+        createResponse(res, false, {}, message.notFoundObject(modelName))
+    }
 }
 
 exports.connectUser = async (req, res) => {
@@ -118,20 +123,25 @@ exports.connectUser = async (req, res) => {
         .catch(error => createErrorResponse(res, error));
 
     if (UserResult.count > 0) {
-        const userPassword = UserResult.rows[0].password;
-        const password = crypto.createHash("sha256").update(req.body.password).digest("hex")
 
-        if (_.isEqual(password, userPassword)) {
-            let token = tokenService.createJWT(UserResult.rows[0].id)
-            let fullname = UserResult.rows[0].firstname + ' ' + UserResult.rows[0].lastname;
+        if (UserResult.rows[0].isSuspended || UserResult.rows[0].isDeleted) {
+            createResponse(res, false, {}, message.user_suspended_deleted)
+        } else {
+            const userPassword = UserResult.rows[0].password;
+            const password = crypto.createHash("sha256").update(req.body.password).digest("hex")
 
-            await logs.create({message: message.logConnectionUser(fullname), createdAt: Date.now()});
-            createResponse(res, true,
-                {
-                    token: token,
-                    user:  UserResult.rows[0]
-                }
-            )
+            if (_.isEqual(password, userPassword)) {
+                let token = tokenService.createJWT(UserResult.rows[0].id)
+                let fullname = UserResult.rows[0].firstname + ' ' + UserResult.rows[0].lastname;
+
+                await logs.create({message: message.logConnectionUser(fullname), createdAt: Date.now()});
+                createResponse(res, true,
+                    {
+                        token: token,
+                        user:  UserResult.rows[0]
+                    }
+                )
+            }
         }
     }
 
@@ -142,4 +152,11 @@ exports.getRoleName = async (req, res) => {
     await Roles.findOne({ where: { id: req.params.idRole } })
         .then(Role => createResponse(res, true, Role.name))
         .catch(error => createErrorResponse(res, error));
+}
+
+exports.isUserSuspendedOrDeleted = async (req, res, idUser) => {
+    return await Users.findOne({ where: { id: idUser }})
+        .then(User => {
+            return !!(User.isSuspended || User.isDeleted);
+        }).catch(e => {return true})
 }

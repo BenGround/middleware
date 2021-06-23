@@ -27,6 +27,11 @@ module.exports = {
         type: DataTypes.FLOAT,
         allowNull: false
       },
+      isDeleted: {
+        defaultValue: 0,
+        type: DataTypes.BOOLEAN,
+        allowNull: false
+      },
       createdAt: {
         allowNull: false,
         type: DataTypes.DATE,

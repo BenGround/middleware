@@ -2,6 +2,7 @@ const loggerTest = require("../models/logger");
 const message = require('../config/messages')
 const { checkJWT } = require("../services/tokenService");
 const { createResponse } = require("../services/responseService");
+const userController = require('../controllers/userControllers');
 
 const tokenChecking = function (req, res, next) {
     let token = req.headers.authorization
@@ -15,8 +16,15 @@ const tokenChecking = function (req, res, next) {
             loggerTest.info('Bad token')
             return createResponse(res, false, {}, message.invalid_token);
         } else {
-            req.app.set('userId', verify.user)
-            next()
+            userController.isUserSuspendedOrDeleted(req, res, verify.user).then(result => {
+
+                if(result){
+                    return createResponse(res, false, {}, message.user_suspended_deleted);
+                } else {
+                    req.app.set('userId', verify.user)
+                    next()
+                }
+            })
         }
     } else {
         return createResponse(res, false, {}, message.token_not_provided);

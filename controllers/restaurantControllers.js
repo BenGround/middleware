@@ -7,13 +7,13 @@ const Restaurants = model['Restaurants'];
 const modelName = 'Restaurant';
 
 exports.getRestaurants = async (req, res) => {
-    await Restaurants.findAll({ include: { model: Users } })
+    await Restaurants.findAll({ where: { isDeleted: false }, include: { model: Users } })
         .then(Restaurants => createResponse(res, true, Restaurants))
         .catch(error => createErrorResponse(res, error));
 }
 
 exports.getRestaurantById = async (req, res) => {
-    await Restaurants.findOne({ include: { model: Users }, where: { id: req.params.idRestaurant } })
+    await Restaurants.findOne({ include: { model: Users }, where: { id: req.params.idRestaurant, isDeleted: false } })
         .then(Restaurant => {
             if (Restaurant) {
                 createResponse(res, true, Restaurant)
@@ -38,7 +38,7 @@ exports.createRestaurant = async (req, res) => {
 }
 
 exports.editRestaurant = async (req, res) => {
-    let restaurantCount = await Restaurants.findAndCountAll({ where: { id:req.params.idRestaurant } });
+    let restaurantCount = await Restaurants.findAndCountAll({ where: { id:req.params.idRestaurant, isDeleted: false} });
 
     if (restaurantCount.count > 0) {
         let dataToUpdate = {};
@@ -72,13 +72,19 @@ exports.editRestaurant = async (req, res) => {
 }
 
 exports.deleteRestaurant = async (req, res) => {
-    await Restaurants.destroy({ where: { id: req.params.idRestaurant } })
-        .then(function (isDeleted) {
-            if (isDeleted) {
-                createResponse(res, true)
-            } else {
-                createResponse(res, false, {}, message.notFoundObject(modelName))
-            }
-        })
-        .catch(error => createErrorResponse(res, error));
+    let restaurantCount = await Restaurants.findAndCountAll({ where: { id:req.params.idRestaurant, isDeleted: false } });
+
+    if (restaurantCount.count > 0) {
+        Restaurants.update({ isDeleted: true, updatedAt: Date.now()}, {where: {id: req.params.idRestaurant}})
+            .then(function (result) {
+                if (_.isEqual(result[0], 1)) {
+                    createResponse(res, true)
+                } else {
+                    createResponse(res, false, {}, message.wrong_data)
+                }
+            })
+            .catch(error => createErrorResponse(res, error));
+    } else {
+        createResponse(res, false, {}, message.notFoundObject(modelName))
+    }
 }
