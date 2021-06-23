@@ -19,7 +19,11 @@ message.notFoundObject = (objectName) => {
 }
 
 message.createObject = (objectName) => {
-    return 'L\'objet ' + objectName + '  a bien été créé.';
+    return 'L\'objet ' + objectName + ' a bien été créé.';
+}
+
+message.editObject = (objectName) => {
+    return 'L\'objet ' + objectName + ' a bien été modifié.';
 }
 
 module.exports = message;

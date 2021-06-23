@@ -57,7 +57,22 @@ exports.createArticle = async (req, res) => {
             price: req.body.price
         }
     )
-        .then(Article => createResponse(res, true, Article, message.createObject(modelName)))
+        .then(ArticleCreated => {
+            Articles.findOne(
+                {
+                    where: { id: ArticleCreated.id, isDeleted: false },
+                    include: [{
+                        model: Restaurants
+                    }, {
+                        model: TypesArticles
+                    },{
+                        model: Menus
+                    }],
+                }
+            ).then(Article => {
+                createResponse(res, true, Article, message.createObject(modelName))
+            })
+        })
         .catch(error => createErrorResponse(res, error));
 }
 
@@ -82,7 +97,20 @@ exports.editArticle = async (req, res) => {
         Articles.update(dataToUpdate, {where: {id: req.params.idArticle}})
             .then(function (result) {
                 if (_.isEqual(result[0], 1)) {
-                    createResponse(res, true)
+                    Articles.findOne(
+                        {
+                            where: { id: req.params.idArticle, isDeleted: false },
+                            include: [{
+                                model: Restaurants
+                            }, {
+                                model: TypesArticles
+                            },{
+                                model: Menus
+                            }],
+                        }
+                    ).then(Article => {
+                            createResponse(res, true, Article, message.editObject(modelName))
+                    })
                 } else {
                     createResponse(res, false, {}, message.wrong_data)
                 }

@@ -96,12 +96,12 @@ exports.createOrder = async (req, res) => {
                 ordersStatusId: req.body.ordersStatusId
             }
         )
-            .then(Order => {
+            .then(OrderCreate => {
 
                 if (req.body.articlesIds) {
                     for (const articleId of req.body.articlesIds) {
                         Articles.findOne({where: {id: articleId}}).then(article => {
-                            article.addOrders(Order)
+                            article.addOrders(OrderCreate)
                         });
                     }
                 }
@@ -109,12 +109,34 @@ exports.createOrder = async (req, res) => {
                 if (req.body.menusIds) {
                     for (const menuId of req.body.menusIds) {
                         Menus.findOne({where: {id: menuId}}).then(menu => {
-                            Order.addMenus(1)
+                            menu.addOrders(OrderCreate)
                         });
                     }
                 }
 
-                createResponse(res, true, Order, message.createObject(modelName))
+                setTimeout(() => {
+                    Orders.findOne(
+                        {
+                            where: { id: OrderCreate.id },
+                            include: [{
+                                model: Restaurants
+                            }, {
+                                model: Articles,
+                                include:[{
+                                    model: TypesArticles
+                                }]
+                            },{
+                                model: Menus
+                            },
+                            {
+                                model: OrdersStatus
+                            }],
+                        }
+                    )
+                    .then(Order => {
+                        createResponse(res, true, Order, message.createObject(modelName))
+                    })
+                }, 1000);
             })
             .catch(error => createErrorResponse(res, error));
     } else {
@@ -221,7 +243,26 @@ exports.editOrder = async (req, res) => {
         Orders.update(dataToUpdate, {where: {id: req.params.idOrder}})
             .then(function (result) {
                 if (_.isEqual(result[0], 1)) {
-                    createResponse(res, true)
+                    Orders.findOne(
+                        {
+                            where: { id: req.params.idOrder },
+                            include: [{
+                                model: Restaurants
+                            }, {
+                                model: Articles,
+                                include:[{
+                                    model: TypesArticles
+                                }]
+                            },{
+                                model: Menus
+                            },
+                                {
+                                    model: OrdersStatus
+                                }],
+                        }
+                    ).then(Order => {
+                        createResponse(res, true, Order, message.editObject(modelName))
+                    })
                 } else {
                     createResponse(res, false, {}, message.wrong_data)
                 }

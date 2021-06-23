@@ -17,7 +17,6 @@ const tokenChecking = function (req, res, next) {
             return createResponse(res, false, {}, message.invalid_token);
         } else {
             userController.isUserSuspendedOrDeleted(req, res, verify.user).then(result => {
-
                 if(result){
                     return createResponse(res, false, {}, message.user_suspended_deleted);
                 } else {

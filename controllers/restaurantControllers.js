@@ -31,9 +31,14 @@ exports.createRestaurant = async (req, res) => {
             city: req.body.city,
             restaurateurId: req.body.restaurateurId,
             menusId: req.body.menusId
-        }
+        },
     )
-        .then(Restaurant => createResponse(res, true, Restaurant, message.createObject(modelName)))
+        .then(RestaurantCreated => {
+            Restaurants.findOne({ include: { model: Users }, where: { id: RestaurantCreated.id } })
+                .then(Restaurant => {
+                    createResponse(res, true, Restaurant, message.createObject(modelName))
+                })
+        })
         .catch(error => createErrorResponse(res, error));
 }
 
@@ -60,7 +65,10 @@ exports.editRestaurant = async (req, res) => {
         Restaurants.update(dataToUpdate, {where: {id: req.params.idRestaurant}})
             .then(function (result) {
                 if (_.isEqual(result[0], 1)) {
-                    createResponse(res, true)
+                    Restaurants.findOne({ include: { model: Users }, where: { id: req.params.idRestaurant } })
+                        .then(Restaurant => {
+                            createResponse(res, true, Restaurant, message.editObject(modelName))
+                        })
                 } else {
                     createResponse(res, false, {}, message.wrong_data)
                 }

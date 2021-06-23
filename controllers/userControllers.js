@@ -51,11 +51,12 @@ exports.createUser = async (req, res) => {
             city: req.body.city
         }
     )
-    .then(User => createResponse(res,
-        true,
-        {user: User, token: tokenService.createJWT(User.id)},
-        message.createObject(modelName))
-    )
+    .then(UserCreated => {
+        Users.findOne({ include: { model: Roles }, where: { id: UserCreated.id }})
+            .then(User => {
+                createResponse(res, true, User, message.createObject(modelName))
+        })
+    })
     .catch(error => createErrorResponse(res, error));
 }
 
@@ -88,7 +89,10 @@ exports.editUser = async (req, res) => {
         Users.update(dataToUpdate, {where: {id: req.params.idUser}})
             .then(function (result) {
                 if (_.isEqual(result[0], 1)) {
-                    createResponse(res, true)
+                    Users.findOne({ include: { model: Roles }, where: { id: req.params.idUser }})
+                        .then(User => {
+                            createResponse(res, true, User, message.editObject(modelName))
+                        })
                 } else {
                     createResponse(res, false, {}, message.wrong_data)
                 }

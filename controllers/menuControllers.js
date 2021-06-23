@@ -58,18 +58,29 @@ exports.createMenu = async (req, res) => {
                 price: req.body.price
             }
         )
-        .then(Menu => {
+        .then(MenuCreated => {
             let articlesIds = req.body.articlesIds;
 
             if (!_.isUndefined(articlesIds) && Array.isArray(articlesIds)) {
                 for (const articleId of articlesIds) {
                     Articles.findOne({where: {id: articleId}}).then(article => {
-                        article.addMenus(Menu)
+                        article.addMenus(MenuCreated)
                     });
                 }
             }
-
-            createResponse(res, true, Menu, message.createObject(modelName))
+            setTimeout(() => {
+                Menus.findOne(
+                    {
+                        where: { id: MenuCreated.id },
+                        include: [{
+                            model: Restaurants
+                        }, {
+                            model: Articles
+                        }],
+                    }).then(Menu => {
+                        createResponse(res, true, Menu, message.createObject(modelName))
+                    })
+            }, 1000);
         })
         .catch(error => createErrorResponse(res, error));
     } else {
@@ -123,7 +134,19 @@ exports.editMenu = async (req, res) => {
                         }
 
                         if (_.isEqual(result[0], 1)) {
-                            createResponse(res, true)
+                            setTimeout(() => {
+                                Menus.findOne(
+                                    {
+                                        where: { id: req.params.idMenu },
+                                        include: [{
+                                            model: Restaurants
+                                        }, {
+                                            model: Articles
+                                        }],
+                                    }).then(Menu => {
+                                    createResponse(res, true, Menu, message.editObject(modelName))
+                                })
+                            }, 1000);
                         } else {
                             createResponse(res, false, {}, message.wrong_data)
                         }
