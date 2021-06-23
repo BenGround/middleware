@@ -15,7 +15,8 @@ exports.getOrders = async (req, res) => {
         {
             where: { isDeleted: false },
             include: [{
-                model: Restaurants
+                model: Restaurants,
+                where: { isDeleted: false }
             }, {
                 model: Articles,
                 include:[{
@@ -38,7 +39,8 @@ exports.getOrderById = async (req, res) => {
         {
             where: { id:req.params.idOrder, isDeleted: false },
             include: [{
-                model: Restaurants
+                model: Restaurants,
+                where: { isDeleted: false }
             }, {
                 model: Articles,
                 include:[{
@@ -167,7 +169,8 @@ exports.getOrdersByUserId = async (req, res) => {
         {
             where: { userId: req.params.idUser, isDeleted: false },
             include: [{
-                model: Restaurants
+                model: Restaurants,
+                where: { isDeleted: false }
             }, {
                 model: Articles,
                 include:[{
@@ -200,7 +203,8 @@ exports.getOrdersByRestaurateurId = async (req, res) => {
                 {
                     where: { restaurantsId: restaurant.id, isDeleted: false },
                     include: [{
-                        model: Restaurants
+                        model: Restaurants,
+                        where: { isDeleted: false }
                     }, {
                         model: Articles,
                         include:[{
