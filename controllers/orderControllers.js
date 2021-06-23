@@ -6,6 +6,7 @@ const Orders = model['Orders'];
 const Restaurants = model['Restaurants'];
 const Articles = model['Articles'];
 const Menus = model['Menus'];
+const TypesArticles = model['TypesArticles'];
 const modelName = 'Commande';
 
 exports.getOrders = async (req, res) => {
@@ -14,7 +15,10 @@ exports.getOrders = async (req, res) => {
             include: [{
                 model: Restaurants
             }, {
-                model: Articles
+                model: Articles,
+                include:[{
+                    model: TypesArticles
+                }]
             },{
                 model: Menus
             }],
@@ -31,7 +35,10 @@ exports.getOrderById = async (req, res) => {
             include: [{
                 model: Restaurants
             }, {
-                model: Articles
+                model: Articles,
+                include:[{
+                    model: TypesArticles
+                }]
             },{
                 model: Menus
             }],
@@ -127,7 +134,10 @@ exports.getOrdersByUserId = async (req, res) => {
             include: [{
                 model: Restaurants
             }, {
-                model: Articles
+                model: Articles,
+                include:[{
+                    model: TypesArticles
+                }]
             },{
                 model: Menus
             }],
