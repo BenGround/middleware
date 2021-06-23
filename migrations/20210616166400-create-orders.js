@@ -42,6 +42,11 @@ module.exports = {
           key: 'id'
         }
       },
+      isPaid: {
+        defaultValue: 0,
+        type: DataTypes.BOOLEAN,
+        allowNull: false
+      },
       isDeleted: {
         defaultValue: 0,
         type: DataTypes.BOOLEAN,

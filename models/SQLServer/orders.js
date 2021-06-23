@@ -33,6 +33,11 @@ module.exports = (sequelize, DataTypes) => {
     }
   };
   Orders.init({
+    isPaid: {
+      defaultValue: 0,
+      type: DataTypes.BOOLEAN,
+      allowNull: false
+    },
     isDeleted: {
       defaultValue: 0,
       type: DataTypes.BOOLEAN,

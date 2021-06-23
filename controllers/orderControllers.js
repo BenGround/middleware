@@ -204,7 +204,7 @@ exports.getOrdersByRestaurateurId = async (req, res) => {
     }).catch(error => createErrorResponse(res, error));
 }
 
-exports.changeOrderStatus = async (req, res) => {
+exports.editOrder = async (req, res) => {
     let orderCount = await Orders.findAndCountAll({ where: { id:req.params.idOrder, isDeleted: false } });
 
     if (orderCount.count > 0) {
@@ -212,6 +212,8 @@ exports.changeOrderStatus = async (req, res) => {
 
         if (req.body.ordersStatusId) {
             dataToUpdate.ordersStatusId = req.body.ordersStatusId;
+        } else if (req.body.isPaid) {
+            dataToUpdate.isPaid = req.body.isPaid;
         }
 
         dataToUpdate.updatedAt = Date.now();
