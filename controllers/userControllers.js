@@ -68,19 +68,23 @@ exports.editUser = async (req, res) => {
 
         if (req.body.email) {
             dataToUpdate.email = req.body.email;
-        } else if (req.body.password) {
+        }
+        if (req.body.password) {
             dataToUpdate.password = crypto.createHash("sha256").update(req.body.password).digest("hex");
-        } else if (req.body.roleId) {
+        }
+        if (req.body.roleId) {
             dataToUpdate.roleId = req.body.roleId;
         }
-
         if (req.body.firstname) {
             dataToUpdate.firstname = req.body.firstname;
-        } else if (req.body.lastname) {
+        }
+        if (req.body.lastname) {
             dataToUpdate.lastname = req.body.lastname;
-        } else if (req.body.address) {
+        }
+        if (req.body.address) {
             dataToUpdate.address = req.body.address;
-        } else if (req.body.city) {
+        }
+        if (req.body.city) {
             dataToUpdate.city = req.body.city;
         }
 
