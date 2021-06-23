@@ -3,6 +3,7 @@ const router = express.Router();
 const restaurantController = require('../controllers/restaurantControllers');
 const articleController = require("../controllers/articleControllers");
 const menuController = require("../controllers/menuControllers");
+const orderControllers = require('../controllers/orderControllers');
 const { roles } = require("../config/roles");
 const { hasRole } = require("../middleware/roleCheck");
 
@@ -31,6 +32,7 @@ router.delete('/article/delete/:idArticle(\\d+)', articleController.deleteArticl
 router.post('/menu/create', menuController.createMenu);
 router.put('/menu/edit/:idMenu(\\d+)', menuController.editMenu);
 router.delete('/menu/delete/:idMenu(\\d+)', menuController.deleteMenu);
-router.post('/menu/add-articles/:idMenu(\\d+)', menuController.addArticle);
+
+router.get('/orders/restaurateur/:idUser(\\d+)', orderControllers.getOrdersByRestaurateurId);
 
 module.exports = router;

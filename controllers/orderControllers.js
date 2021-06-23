@@ -152,3 +152,35 @@ exports.getOrdersByUserId = async (req, res) => {
         })
         .catch(error => createErrorResponse(res, error));
 }
+
+exports.getOrdersByRestaurateurId = async (req, res) => {
+    let restaurantsOrders = [];
+
+    await Restaurants.findAll({where: { restaurateurId: req.params.idUser }}).then(restaurants => {
+        restaurants.forEach(restaurant => {
+            Orders.findAll(
+                {
+                    where: { restaurantsId: restaurant.id },
+                    include: [{
+                        model: Restaurants
+                    }, {
+                        model: Articles,
+                        include:[{
+                            model: TypesArticles
+                        }]
+                    },{
+                        model: Menus
+                    }],
+                }
+            )
+                .then(Orders => {
+                    if (Orders) {
+                        restaurantsOrders.push({restaurant: restaurant, orders: Orders})
+                    }
+                })
+                .catch(error => createErrorResponse(res, error));
+        })
+
+        setTimeout(() => { createResponse(res, true, restaurantsOrders) }, 1000);
+    }).catch(error => createErrorResponse(res, error));
+}

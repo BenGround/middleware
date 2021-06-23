@@ -5,6 +5,7 @@ const { createErrorResponse, createResponse } = require("../services/responseSer
 const Menus = model['Menus'];
 const Restaurants = model['Restaurants'];
 const Articles = model['Articles'];
+const MenuArticles = model['MenuArticles'];
 const modelName = 'Menu';
 
 exports.getMenus = async (req, res) => {
@@ -34,38 +35,100 @@ exports.getMenuById = async (req, res) => {
 }
 
 exports.createMenu = async (req, res) => {
-    await Menus.create({
-            name: req.body.name,
-            restaurantsId: req.body.restaurantsId
+    let result = true;
+    let restaurantId = req.body.restaurantsId;
+
+    if (req.body.articlesIds) {
+        for (const articleId of req.body.articlesIds) {
+            await Articles.findOne({ where: { id:articleId }})
+                .then(Article => {
+                    if ((_.isNull(Article)) || !(_.isEqual(parseInt(restaurantId), parseInt(Article.restaurantsId)))) {
+                        result = false;
+                    }
+                })
         }
-    )
-        .then(Menu => createResponse(res, true, Menu, message.createObject(modelName)))
+    }
+
+    if (result) {
+        await Menus.create({
+                name: req.body.name,
+                restaurantsId: req.body.restaurantsId,
+                price: req.body.price
+            }
+        )
+        .then(Menu => {
+            let articlesIds = req.body.articlesIds;
+
+            if (!_.isUndefined(articlesIds) && Array.isArray(articlesIds)) {
+                for (const articleId of articlesIds) {
+                    Articles.findOne({where: {id: articleId}}).then(article => {
+                        article.addMenus(Menu)
+                    });
+                }
+            }
+
+            createResponse(res, true, Menu, message.createObject(modelName))
+        })
         .catch(error => createErrorResponse(res, error));
+    } else {
+        createResponse(res, false, {}, message.wrong_articles_in_order)
+    }
 }
 
 exports.editMenu = async (req, res) => {
     let MenuCount = await Menus.findAndCountAll({ where: { id:req.params.idMenu } });
 
     if (MenuCount.count > 0) {
-        let dataToUpdate = {};
+        let result = true;
+        let restaurantId = req.body.restaurantsId;
 
-        if (req.body.name) {
-            dataToUpdate.name = req.body.name;
-        } else if (req.body.restaurantsId) {
-            dataToUpdate.restaurantsId = req.body.restaurantsId;
+        if (req.body.articlesIds) {
+            for (const articleId of req.body.articlesIds) {
+                await Articles.findOne({ where: { id:articleId }})
+                    .then(Article => {
+                        if ((_.isNull(Article)) || !(_.isEqual(parseInt(restaurantId), parseInt(Article.restaurantsId)))) {
+                            result = false;
+                        }
+                    })
+            }
         }
 
-        dataToUpdate.updatedAt = Date.now();
+        if (result) {
+            await MenuArticles.destroy({ where: { MenusId: req.params.idMenu } }).then(MenuArticles => {
+                let dataToUpdate = {};
 
-        Menus.update(dataToUpdate, {where: {id: req.params.idMenu}})
-            .then(function (result) {
-                if (_.isEqual(result[0], 1)) {
-                    createResponse(res, true)
-                } else {
-                    createResponse(res, false, {}, message.wrong_data)
+                if (req.body.name) {
+                    dataToUpdate.name = req.body.name;
+                } else if (req.body.restaurantsId) {
+                    dataToUpdate.restaurantsId = req.body.restaurantsId;
                 }
+
+                dataToUpdate.updatedAt = Date.now();
+
+                Menus.update(dataToUpdate, {where: {id: req.params.idMenu}})
+                    .then(function (result) {
+
+                        let articlesIds = req.body.articlesIds;
+
+                        if (!_.isUndefined(articlesIds) && Array.isArray(articlesIds)) {
+                            for (const articleId of articlesIds) {
+                                Articles.findOne({where: {id: articleId}}).then(article => {
+                                    article.addMenus(MenuCount.rows[0])
+                                });
+                            }
+                        }
+
+                        if (_.isEqual(result[0], 1)) {
+                            createResponse(res, true)
+                        } else {
+                            createResponse(res, false, {}, message.wrong_data)
+                        }
+                    })
+                    .catch(error => createErrorResponse(res, error));
             })
-            .catch(error => createErrorResponse(res, error));
+        } else {
+            createResponse(res, false, {}, message.wrong_articles_in_order)
+        }
     } else {
         createResponse(res, false, {}, message.notFoundObject(modelName))
     }
@@ -81,21 +144,6 @@ exports.deleteMenu = async (req, res) => {
             }
         })
         .catch(error => createErrorResponse(res, error));
-}
-
-exports.addArticle = async (req, res) => {
-    let MenuObj = await Menus.findOne({ where: { id: req.params.idMenu },include: { model: Restaurants  } })
-    let articlesIds = req.body.articlesIds;
-
-    if (!_.isUndefined(articlesIds) && Array.isArray(articlesIds)) {
-        for (const articleId of articlesIds) {
-            MenuObj.addArticles(await Articles.findOne({where: {id: articleId}}));
-        }
-
-        createResponse(res, true, {}, message.articles_added_success)
-    } else {
-        createResponse(res, false, {}, message.wrong_data)
-    }
 }
 
 exports.getMenuByRestaurantId = async (req, res) => {

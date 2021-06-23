@@ -8,7 +8,7 @@ module.exports = {
         primaryKey: true,
         type: DataTypes.INTEGER
       },
-      menuId: {
+      menusId: {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
