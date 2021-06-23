@@ -15,8 +15,6 @@ module.exports = {
           model: 'Orders',
           key: 'id'
         },
-        onUpdate: 'CASCADE',
-        onDelete: 'CASCADE'
       },
       articlesId: {
         type: DataTypes.INTEGER,
@@ -25,6 +23,8 @@ module.exports = {
           model: 'Articles',
           key: 'id'
         },
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE'
       },
     });
   },
