@@ -13,7 +13,7 @@ const modelName = 'Commande';
 exports.getOrders = async (req, res) => {
     await Orders.findAll(
         {
-            // where: { isDeleted: false },
+            where: { isDeleted: false },
             include: [{
                 model: Restaurants,
                 where: { isDeleted: false }
@@ -216,6 +216,43 @@ exports.getOrdersByRestaurateurId = async (req, res) => {
                     {
                         model: OrdersStatus
                     }],
+                }
+            )
+                .then(Orders => {
+                    if (Orders) {
+                        restaurantsOrders.push({restaurant, orders: Orders})
+                    }
+                })
+                .catch(error => createErrorResponse(res, error));
+        })
+
+        setTimeout(() => { createResponse(res, true, restaurantsOrders) }, 1000);
+    }).catch(error => createErrorResponse(res, error));
+}
+
+
+exports.getAllOrdersByRestaurateurId = async (req, res) => {
+    let restaurantsOrders = [];
+
+    await Restaurants.findAll({where: { restaurateurId: req.params.idUser, isDeleted: false }}).then(restaurants => {
+        restaurants.forEach(restaurant => {
+            Orders.findAll(
+                {
+                    where: { restaurantsId: restaurant.id },
+                    include: [{
+                        model: Restaurants,
+                        where: { isDeleted: false }
+                    }, {
+                        model: Articles,
+                        include:[{
+                            model: TypesArticles
+                        }]
+                    },{
+                        model: Menus
+                    },
+                        {
+                            model: OrdersStatus
+                        }],
                 }
             )
                 .then(Orders => {
