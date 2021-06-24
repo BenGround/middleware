@@ -22,11 +22,6 @@ exports.getNotificationsByUser = async (req, res) => {
         }
     )
     .then(NotificationsGet => {
-        NotificationsGet.forEach(item => {
-            Notifications.update({ hasBeenSeen: true }, { where: { id: item.id } })
-                .catch(error => createErrorResponse(res, error));
-        })
-
         if (NotificationsGet) {
             createResponse(res, true, NotificationsGet)
         } else {
@@ -34,6 +29,40 @@ exports.getNotificationsByUser = async (req, res) => {
         }
     })
     .catch(error => createErrorResponse(res, error));
+}
+
+exports.setNotificationsAsSeenForUser = async (req, res) => {
+    await Notifications.findAll(
+        {
+            where: { hasBeenSeen: false },
+            include: [{
+                model: Users,
+                where: { id: req.params.idUser }
+            }],
+        }
+    )
+        .then(NotificationsGet => {
+
+            NotificationsGet.forEach(item => {
+                Notifications.update({ hasBeenSeen: true }, { where: { id: item.id } })
+                    .catch(error => createErrorResponse(res, error));
+            })
+
+            if (NotificationsGet) {
+                Notifications.findAll(
+                    {
+                        where: { hasBeenSeen: false },
+                        include: [{
+                            model: Users,
+                            where: { id: req.params.idUser }
+                        }],
+                    }
+                ).then(Notifs => createResponse(res, true, Notifs))
+            } else {
+                createResponse(res, false, {}, message.notFoundObject(modelName))
+            }
+        })
+        .catch(error => createErrorResponse(res, error));
 }
 
 exports.createNotification = async (req, res) => {
