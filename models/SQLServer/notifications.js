@@ -3,7 +3,7 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class Orders extends Model {
+  class Notifications extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -13,27 +13,22 @@ module.exports = (sequelize, DataTypes) => {
       this.belongsTo(models.Users, {
         foreignKey: 'userId'
       })
-      this.belongsTo(models.Users, {
-        foreignKey: 'deliveryUserId'
-      })
-      this.belongsTo(models.Restaurants, {
-        foreignKey: 'restaurantsId'
-      });
-      this.belongsToMany(models.Articles, {
-        through: 'OrdersArticles',
-        foreignKey: 'ordersId'
-      });
-      this.belongsToMany(models.Menus, {
-        through: 'OrdersMenus',
-        foreignKey: 'ordersId'
-      });
-      this.belongsTo(models.OrdersStatus, {
-        foreignKey: 'ordersStatusId'
-      })
     }
   };
-  Orders.init({
-    isDeleted: {
+  Notifications.init({
+    title: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    description: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    url: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    hasBeenSeen: {
       defaultValue: 0,
       type: DataTypes.BOOLEAN,
       allowNull: false
@@ -48,7 +43,7 @@ module.exports = (sequelize, DataTypes) => {
     }
   }, {
     sequelize,
-    modelName: 'Orders',
+    modelName: 'Notifications',
   });
-  return Orders;
+  return Notifications;
 };

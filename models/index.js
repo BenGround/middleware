@@ -27,6 +27,7 @@ const models = [
   require('./SQLServer/ordersArticles')(sequelize, Sequelize),
   require('./SQLServer/ordersMenus')(sequelize, Sequelize),
   require('./SQLServer/ordersStatus')(sequelize, Sequelize),
+  require('./SQLServer/notifications')(sequelize, Sequelize),
 ];
 
 models.forEach(model => {

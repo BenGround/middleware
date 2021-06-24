@@ -34,6 +34,5 @@ router.put('/menu/edit/:idMenu(\\d+)', menuController.editMenu);
 router.put('/menu/delete/:idMenu(\\d+)', menuController.deleteMenu);
 
 router.get('/orders/restaurateur/:idUser(\\d+)', orderControllers.getOrdersByRestaurateurId);
-router.put('/order/edit/:idOrder(\\d+)', orderControllers.editOrder);
 
 module.exports = router;

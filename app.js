@@ -10,6 +10,7 @@ const userRegisterRouter = require('./routes/user/register');
 const restaurantRouter = require('./routes/restaurateur');
 const utilisateurRouter = require('./routes/utilisateur');
 const logsRouter = require('./routes/logs');
+const notificationsRouter = require('./routes/notifications');
 require('./config/mongoDBServer');
 require('dotenv').config()
 
@@ -25,5 +26,6 @@ app.use('/api/user', userRouter);
 app.use('/api', restaurantRouter);
 app.use('/api', utilisateurRouter);
 app.use('/api/logs', logsRouter);
+app.use('/api/notifications', notificationsRouter);
 
 module.exports = app;

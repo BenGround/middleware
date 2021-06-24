@@ -238,8 +238,6 @@ exports.editOrder = async (req, res) => {
 
         if (req.body.ordersStatusId) {
             dataToUpdate.ordersStatusId = req.body.ordersStatusId;
-        } else if (req.body.isPaid) {
-            dataToUpdate.isPaid = req.body.isPaid;
         }
 
         dataToUpdate.updatedAt = Date.now();

@@ -25,7 +25,6 @@ exports.getArticles = async (req, res) => {
         .catch(error => createErrorResponse(res, error));
 }
 
-
 exports.getArticleById = async (req, res) => {
     await Articles.findOne(
         {

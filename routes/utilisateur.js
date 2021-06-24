@@ -12,5 +12,6 @@ router.post('/order/create', orderControllers.createOrder);
 // router.use(hasRole(roles.ROLE_RESTAURATEUR))
 
 router.put('/order/delete/:idOrder(\\d+)', orderControllers.deleteOrder);
+router.put('/order/edit/:idOrder(\\d+)', orderControllers.editOrder);
 
 module.exports = router;
