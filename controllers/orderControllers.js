@@ -13,7 +13,7 @@ const modelName = 'Commande';
 exports.getOrders = async (req, res) => {
     await Orders.findAll(
         {
-            where: { isDeleted: false },
+            // where: { isDeleted: false },
             include: [{
                 model: Restaurants,
                 where: { isDeleted: false }
