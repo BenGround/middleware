@@ -76,6 +76,7 @@ exports.createNotification = async (req, res) => {
         .then(NotificationCreated => {
             Notifications.findOne({ include: { model: Users }, where: { id: NotificationCreated.id } })
                 .then(Notification => {
+                    io.emit("newNotification", Notification)
                     createResponse(res, true, Notification, message.createObject(modelName))
                 })
         })
