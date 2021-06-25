@@ -9,6 +9,7 @@ const userConnectRouter = require('./routes/user/connect');
 const userRegisterRouter = require('./routes/user/register');
 const restaurantRouter = require('./routes/restaurateur');
 const utilisateurRouter = require('./routes/utilisateur');
+const deliveryManRouter = require('./routes/deliveryman');
 const logsRouter = require('./routes/logs');
 const notificationsRouter = require('./routes/notifications');
 require('./config/mongoDBServer');
@@ -27,5 +28,6 @@ app.use('/api', restaurantRouter);
 app.use('/api', utilisateurRouter);
 app.use('/api/logs', logsRouter);
 app.use('/api/notifications', notificationsRouter);
+app.use('/api/deliveryman', deliveryManRouter);
 
 module.exports = app;

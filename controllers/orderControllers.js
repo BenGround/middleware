@@ -194,6 +194,66 @@ exports.getOrdersByUserId = async (req, res) => {
         .catch(error => createErrorResponse(res, error));
 }
 
+exports.getOrdersForDeliveryMan = async (req, res) => {
+    await Orders.findAll(
+        {
+            where: { ordersStatusId: 3, isDeleted: false },
+            include: [{
+                model: Restaurants,
+                where: { isDeleted: false }
+            }, {
+                model: Articles,
+                include:[{
+                    model: TypesArticles
+                }]
+            },{
+                model: Menus
+            },
+                {
+                    model: OrdersStatus
+                }],
+        }
+    )
+        .then(Orders => {
+            if (Orders) {
+                createResponse(res, true, Orders)
+            } else {
+                createResponse(res, false, {}, message.notFoundObject(modelName))
+            }
+        })
+        .catch(error => createErrorResponse(res, error));
+}
+
+exports.getOrdersForDeliveryManToDeliver = async (req, res) => {
+    await Orders.findAll(
+        {
+            where: { ordersStatusId: 5, deliveryUserId: req.params.idUser, isDeleted: false },
+            include: [{
+                model: Restaurants,
+                where: { isDeleted: false }
+            }, {
+                model: Articles,
+                include:[{
+                    model: TypesArticles
+                }]
+            },{
+                model: Menus
+            },
+                {
+                    model: OrdersStatus
+                }],
+        }
+    )
+        .then(Orders => {
+            if (Orders) {
+                createResponse(res, true, Orders)
+            } else {
+                createResponse(res, false, {}, message.notFoundObject(modelName))
+            }
+        })
+        .catch(error => createErrorResponse(res, error));
+}
+
 exports.getOrdersByRestaurateurId = async (req, res) => {
     let restaurantsOrders = [];
 
@@ -229,7 +289,6 @@ exports.getOrdersByRestaurateurId = async (req, res) => {
         setTimeout(() => { createResponse(res, true, restaurantsOrders) }, 1000);
     }).catch(error => createErrorResponse(res, error));
 }
-
 
 exports.getAllOrdersByRestaurateurId = async (req, res) => {
     let restaurantsOrders = [];
@@ -275,6 +334,9 @@ exports.editOrder = async (req, res) => {
 
         if (req.body.ordersStatusId) {
             dataToUpdate.ordersStatusId = req.body.ordersStatusId;
+        }
+        if (req.body.deliveryUserId) {
+            dataToUpdate.deliveryUserId = req.body.deliveryUserId;
         }
 
         dataToUpdate.updatedAt = Date.now();
