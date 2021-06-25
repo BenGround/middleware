@@ -21,7 +21,8 @@
     "mysql2": "^2.2.5",
     "nodemon": "^2.0.7",
     "sequelize": "^5.22.3",
-    "tedious": "^11.0.9"
+    "tedious": "^11.0.9",
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
     "config.json": "0.0.4",

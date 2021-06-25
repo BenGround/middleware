@@ -32,7 +32,31 @@ exports.getUserByEmail = async (req, res) => {
     await Users.findOne({ where: { email: req.body.email, isDeleted: false } })
         .then(User => {
             if (User) {
-                createResponse(res, true, Restaurant)
+                createResponse(res, true, User)
+            } else {
+                createResponse(res, false, {}, message.notFoundObject(modelName))
+            }
+        })
+        .catch(error => createErrorResponse(res, error));
+}
+
+exports.getUserByReferralCode = async (req, res) => {
+    await Users.findOne({ where: { referralCode: req.params.referralCode, isDeleted: false } })
+        .then(User => {
+            if (User) {
+                createResponse(res, true, User)
+            } else {
+                createResponse(res, false, {}, message.notFoundObject(modelName))
+            }
+        })
+        .catch(error => createErrorResponse(res, error));
+}
+
+exports.getUsersReferredByUserId = async (req, res) => {
+    await Users.findAll({ where: { referralUserId: req.params.idUser, isDeleted: false } })
+        .then(Users => {
+            if (Users) {
+                createResponse(res, true, Users)
             } else {
                 createResponse(res, false, {}, message.notFoundObject(modelName))
             }
@@ -48,7 +72,8 @@ exports.createUser = async (req, res) => {
             lastname: req.body.lastname,
             roleId: req.body.roleId,
             address: req.body.address,
-            city: req.body.city
+            city: req.body.city,
+            referralUserId: req.body.referralUserId
         }
     )
     .then(UserCreated => {

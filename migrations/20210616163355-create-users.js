@@ -34,6 +34,14 @@ module.exports = {
         type: DataTypes.STRING,
         allowNull: false
       },
+      referralCode: {
+        type: DataTypes.STRING,
+        allowNull: false
+      },
+      referralUserId: {
+        allowNull: true,
+        type: DataTypes.INTEGER
+      },
       isSuspended: {
         type: DataTypes.BOOLEAN,
         allowNull: false,

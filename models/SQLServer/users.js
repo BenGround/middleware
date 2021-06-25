@@ -1,4 +1,5 @@
 'use strict';
+const { v4: uuidv4 } = require('uuid');
 const {
   Model
 } = require('sequelize');
@@ -65,6 +66,13 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false
     },
+    referralCode: {
+      type: DataTypes.UUID,
+    },
+    referralUserId: {
+      allowNull: true,
+      type: DataTypes.INTEGER
+    },
     isSuspended: {
       defaultValue: 0,
       allowNull: false,
@@ -84,8 +92,14 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.DATE,
     }
   }, {
+    hooks: {
+      beforeCreate: (user, options) => {
+        user.referralCode = uuidv4();
+      }
+    },
     sequelize,
     modelName: 'Users',
   });
+
   return Users;
 };
