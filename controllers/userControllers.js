@@ -112,7 +112,7 @@ exports.editUser = async (req, res) => {
         if (req.body.city) {
             dataToUpdate.city = req.body.city;
         }
-        if (req.body.isSuspended) {
+        if (req.body.isSuspended !== undefined) {
             dataToUpdate.isSuspended = req.body.isSuspended;
         }
         dataToUpdate.updatedAt = Date.now();

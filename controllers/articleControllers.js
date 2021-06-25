@@ -87,7 +87,7 @@ exports.editArticle = async (req, res) => {
             dataToUpdate.typesArticlesId = req.body.typesArticlesId;
         } else if (req.body.restaurantsId) {
             dataToUpdate.restaurantsId = req.body.restaurantsId;
-        } else if (req.body.price) {
+        } else if (req.body.price !== undefined) {
             dataToUpdate.price = req.body.price;
         }
 
