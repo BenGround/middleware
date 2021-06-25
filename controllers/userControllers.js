@@ -112,7 +112,9 @@ exports.editUser = async (req, res) => {
         if (req.body.city) {
             dataToUpdate.city = req.body.city;
         }
-
+        if (req.body.isSuspended) {
+            dataToUpdate.isSuspended = req.body.isSuspended;
+        }
         dataToUpdate.updatedAt = Date.now();
 
         Users.update(dataToUpdate, {where: {id: req.params.idUser}})
