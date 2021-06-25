@@ -9,6 +9,7 @@ const Menus = model['Menus'];
 const TypesArticles = model['TypesArticles'];
 const OrdersStatus = model['OrdersStatus'];
 const modelName = 'Commande';
+const { Op } = require("sequelize");
 
 exports.getOrders = async (req, res) => {
     await Orders.findAll(
@@ -227,7 +228,7 @@ exports.getOrdersForDeliveryMan = async (req, res) => {
 exports.getOrdersForDeliveryManToDeliver = async (req, res) => {
     await Orders.findAll(
         {
-            where: { ordersStatusId: 5, deliveryUserId: req.params.idUser, isDeleted: false },
+            where: { ordersStatusId: { [Op.or]: [5, 6] }, deliveryUserId: req.params.idUser, isDeleted: false },
             include: [{
                 model: Restaurants,
                 where: { isDeleted: false }
