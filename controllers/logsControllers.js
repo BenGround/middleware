@@ -1,7 +1,8 @@
 const logs = require('../models/MongoDB/logs');
+const { createErrorResponse, createResponse } = require("../services/responseService");
 
 exports.getConnectionLogs = async (req, res) => {
     logs.find()
-        .then(Log => res.status(200).json(Log))
-        .catch(error => res.status(400).json({ error }));
+        .then(Logs => createResponse(res, true, Logs))
+        .catch(error => createErrorResponse(res, error));
 }
