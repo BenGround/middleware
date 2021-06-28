@@ -1,8 +1,8 @@
 'use strict';
 module.exports = {
   up: async (queryInterface, DataTypes) => {
-    await queryInterface.sequelize.query('insert into roles (name) values (\'User\'), (\'Restaurateur\'), (\'Livreur\'), (\'Developpeur\'), (\'Commercial\'), (\'Technique\')')
-    await queryInterface.sequelize.query('insert into users (email, password, firstname, lastname, address, city, roleId, referralCode) values (\'ben@gmail.com\', \'03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4\', \'ben\', \'ben\', \'1 rue test\', \'Paris\', 2, \'837758f2-4c0a-43e2-9b0a-7d2a1b23d4\')')
+    await queryInterface.sequelize.query('insert into roles (name) values (\'User\'), (\'Restaurateur\'), (\'Livreur\'), (\'Developpeur\'), (\'Commercial\'), (\'Technique\'), (\'Admin\')')
+    await queryInterface.sequelize.query('insert into users (email, password, firstname, lastname, address, city, roleId, referralCode) values (\'ben@gmail.com\', \'03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4\', \'ben\', \'ben\', \'1 rue test\', \'Paris\', 7, \'837758f2-4c0a-43e2-9b0a-7d2a1b23d4\')')
     await queryInterface.sequelize.query('insert into users (email, password, firstname, lastname, address, city, roleId, referralCode) values (\'User@gmail.com\', \'03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4\', \'ben\', \'ben\', \'1 rue test\', \'Paris\', 1, \'837758f2-4c0a-43e2-9b0a-7d2a1b23d5\')')
     await queryInterface.sequelize.query('insert into users (email, password, firstname, lastname, address, city, roleId, referralCode) values (\'Restaurateur@gmail.com\', \'03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4\', \'ben\', \'ben\', \'1 rue test\', \'Paris\', 2, \'837758f2-4c0a-43e2-9b0a-7d2a1b23d3\')')
     await queryInterface.sequelize.query('insert into users (email, password, firstname, lastname, address, city, roleId, referralCode) values (\'Livreur@gmail.com\', \'03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4\', \'ben\', \'ben\', \'1 rue test\', \'Paris\', 3, \'837758f2-4c0a-43e2-9b0a-7d2a1b23d6\')')
