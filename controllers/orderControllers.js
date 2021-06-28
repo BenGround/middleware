@@ -8,6 +8,8 @@ const Articles = model['Articles'];
 const Menus = model['Menus'];
 const TypesArticles = model['TypesArticles'];
 const OrdersStatus = model['OrdersStatus'];
+const OrdersMenus = model['OrdersMenus'];
+const OrdersArticles = model['OrdersArticles'];
 const modelName = 'Commande';
 const { Op } = require("sequelize");
 
@@ -69,9 +71,9 @@ exports.createOrder = async (req, res) => {
     let result = true;
     let restaurantId = req.body.restaurantsId;
 
-    if (req.body.articlesIds) {
-        for (const articleId of req.body.articlesIds) {
-            await Articles.findOne({ where: { id:articleId }})
+    if (req.body.articles) {
+        for (const articleRow of req.body.articles) {
+            await Articles.findOne({ where: { id: articleRow.id }})
                 .then(Article => {
                     if ((_.isNull(Article)) || !(_.isEqual(parseInt(restaurantId), parseInt(Article.restaurantsId)))) {
                         result = false;
@@ -80,9 +82,9 @@ exports.createOrder = async (req, res) => {
         }
     }
 
-    if (req.body.menusIds) {
-        for (const menuId of req.body.menusIds) {
-            await Menus.findOne({ where: { id:menuId }})
+    if (req.body.menus) {
+        for (const menuRow of req.body.menus) {
+            await Menus.findOne({ where: { id: menuRow.id }})
                 .then(Menus => {
                     if (!_.isEqual(parseInt(restaurantId), parseInt(Menus.restaurantsId))) {
                         result = false;
@@ -101,18 +103,33 @@ exports.createOrder = async (req, res) => {
         )
             .then(OrderCreate => {
 
-                if (req.body.articlesIds) {
-                    for (const articleId of req.body.articlesIds) {
-                        Articles.findOne({where: {id: articleId}}).then(article => {
+                if (req.body.articles) {
+                    for (const articleRow of req.body.articles) {
+                        Articles.findOne({where: {id: articleRow.id}}).then(article => {
                             article.addOrders(OrderCreate)
+
+                            setTimeout(() => {
+                                OrdersArticles.update(
+                                    {quantity: articleRow.quantity},
+                                    {where: {ordersId: OrderCreate.id, articlesId: article.id}
+                                })
+                            }, 300);
                         });
                     }
                 }
 
-                if (req.body.menusIds) {
-                    for (const menuId of req.body.menusIds) {
-                        Menus.findOne({where: {id: menuId}}).then(menu => {
+                if (req.body.menus) {
+                    for (const menuRow of req.body.menus) {
+                        Menus.findOne({where: {id: menuRow.id}}).then(menu => {
                             menu.addOrders(OrderCreate)
+
+                            setTimeout(() => {
+                                OrdersMenus.update(
+                                    {quantity: menuRow.quantity},
+                                    {where: {ordersId: OrderCreate.id, menusId: menu.id}
+                                    }
+                                )
+                            }, 300);
                         });
                     }
                 }
@@ -358,9 +375,9 @@ exports.editOrder = async (req, res) => {
                             },{
                                 model: Menus
                             },
-                                {
-                                    model: OrdersStatus
-                                }],
+                            {
+                                model: OrdersStatus
+                            }],
                         }
                     ).then(Order => {
                         createResponse(res, true, Order, message.editObject(modelName))

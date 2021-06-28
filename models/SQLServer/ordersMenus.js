@@ -19,6 +19,11 @@ module.exports = (sequelize, DataTypes) => {
     }
   };
   OrdersMenus.init({
+    quantity: {
+      defaultValue: 1,
+      type: DataTypes.FLOAT,
+      allowNull: false
+    },
   }, {
     sequelize,
     modelName: 'OrdersMenus',

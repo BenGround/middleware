@@ -26,6 +26,11 @@ module.exports = {
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE'
       },
+      quantity: {
+        defaultValue: 1,
+        type: DataTypes.FLOAT,
+        allowNull: false
+      },
     });
   },
   down: async (queryInterface, Sequelize) => {

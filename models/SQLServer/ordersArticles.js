@@ -19,6 +19,11 @@ module.exports = (sequelize, DataTypes) => {
     }
   };
   OrdersArticles.init({
+    quantity: {
+      defaultValue: 1,
+      type: DataTypes.FLOAT,
+      allowNull: false
+    },
   }, {
     sequelize,
     modelName: 'OrdersArticles',
