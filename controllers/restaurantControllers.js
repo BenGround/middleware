@@ -86,6 +86,7 @@ exports.deleteRestaurant = async (req, res) => {
         Restaurants.update({ isDeleted: true, updatedAt: Date.now()}, {where: {id: req.params.idRestaurant}})
             .then(function (result) {
                 if (_.isEqual(result[0], 1)) {
+                    io.emit("newDashboardData")
                     createResponse(res, true)
                 } else {
                     createResponse(res, false, {}, message.wrong_data)

@@ -154,6 +154,8 @@ exports.createOrder = async (req, res) => {
                         }
                     )
                     .then(Order => {
+                        io.emit("newDashboardData")
+
                         createResponse(res, true, Order, message.createObject(modelName))
                     })
                 }, 1000);
@@ -171,6 +173,7 @@ exports.deleteOrder = async (req, res) => {
         Orders.update({isDeleted: true, updatedAt: Date.now()}, {where: {id: req.params.idOrder}})
             .then(function (result) {
                 if (_.isEqual(result[0], 1)) {
+                    io.emit("newDashboardData")
                     createResponse(res, true)
                 } else {
                     createResponse(res, false, {}, message.wrong_data)
@@ -380,6 +383,7 @@ exports.editOrder = async (req, res) => {
                             }],
                         }
                     ).then(Order => {
+                        io.emit("newDashboardData")
                         createResponse(res, true, Order, message.editObject(modelName))
                     })
                 } else {
