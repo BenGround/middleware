@@ -17,9 +17,8 @@ exports.createComponent = async (req, res) => {
 
     const component = components.create(data, function (err, small) {
         if (err) createErrorResponse(res, error);
+        createResponse(res, true, component, message.createObject(modelName))
     });
-
-    createResponse(res, true, component, message.createObject(modelName))
 }
 
 exports.editComponent = async (req, res) => {
@@ -29,11 +28,16 @@ exports.editComponent = async (req, res) => {
             doc.description = req.body.description;
             doc.updatedAt = Date.now();
             doc.save();
-        });
 
-    setTimeout(() => {
-        components.findOne({ _id: req.params.idComponent })
-            .then(Component => createResponse(res, true, Component, message.editObject(modelName)))
-            .catch(error => createErrorResponse(res, error));
-    }, 300);
+            components.findOne({ _id: req.params.idComponent })
+                .then(Component => createResponse(res, true, Component, message.editObject(modelName)))
+                .catch(error => createErrorResponse(res, error));
+        });
+}
+
+exports.deleteComponent = async (req, res) => {
+    components.deleteOne({ _id: req.params.idComponent }, function (err) {
+        if (err) createErrorResponse(res, error);
+        createResponse(res, true,  [], message.deleteObject(modelName))
+    });
 }

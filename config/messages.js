@@ -26,4 +26,8 @@ message.editObject = (objectName) => {
     return 'L\'objet ' + objectName + ' a bien été modifié.';
 }
 
+message.deleteObject = (objectName) => {
+    return 'L\'objet ' + objectName + ' a bien été supprimé.';
+}
+
 module.exports = message;
