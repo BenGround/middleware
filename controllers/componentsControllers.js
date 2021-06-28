@@ -1,4 +1,5 @@
 const components = require('../models/MongoDB/components');
+const downloadLogs = require('../models/MongoDB/downloadLogs');
 const message = require("../config/messages");
 const { createErrorResponse, createResponse } = require("../services/responseService");
 const modelName = "Composant";
@@ -39,5 +40,16 @@ exports.deleteComponent = async (req, res) => {
     components.deleteOne({ _id: req.params.idComponent }, function (err) {
         if (err) createErrorResponse(res, error);
         createResponse(res, true,  [], message.deleteObject(modelName))
+    });
+}
+
+exports.createDownloadComponentLog = async (req, res) => {
+    let data = {
+        message: req.body.message,
+    };
+
+    const downloadLog = downloadLogs.create(data, function (err, small) {
+        if (err) createErrorResponse(res, error);
+        createResponse(res, true, downloadLog, message.createObject('log de téléchargement'))
     });
 }
