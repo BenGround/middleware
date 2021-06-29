@@ -135,7 +135,6 @@ exports.editUser = async (req, res) => {
 }
 
 exports.deleteUser = async (req, res) => {
-    // userTokenValid(req, res)
     let userCount = await Users.findAndCountAll({ where: { id:req.params.idUser, isDeleted: false } });
 
     if (userCount.count > 0) {

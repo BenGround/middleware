@@ -15,7 +15,7 @@ module.exports = {
     await queryInterface.sequelize.query('insert into Menus (name, restaurantsId, price) values (\'Menu Vegan\', 1, 10.4)')
     await queryInterface.sequelize.query('insert into MenuArticles (menusId, articlesId) values (1, 1)')
 
-    await queryInterface.sequelize.query('insert into Restaurants (name, address, city, restaurateurId) values (\'Restaurant 2\', \'1 rue rémi\', \'Nantes\', 2)')
+    await queryInterface.sequelize.query('insert into Restaurants (name, address, city, restaurateurId) values (\'Restaurant 2\', \'1 rue rémi\', \'Nantes\', 3)')
     await queryInterface.sequelize.query('insert into Articles (name, typesArticlesId, restaurantsId, price) values (\'kebab\', 2, 2, 15.2)')
     await queryInterface.sequelize.query('insert into Articles (name, typesArticlesId, restaurantsId, price) values (\'frite\', 1, 2, 5.2)')
     await queryInterface.sequelize.query('insert into Menus (name, restaurantsId, price) values (\'Menu Kebab\', 2, 10.4)')

@@ -1,6 +1,7 @@
 const _ = require('lodash')
 const model = require('../models/index')
 const message = require('../config/messages')
+const {roles} = require("../config/roles");
 const Users = model['Users'];
 const { createErrorResponse, createResponse } = require("../services/responseService");
 
@@ -14,7 +15,7 @@ const secureUser = function (res, idUser) {
     }
 }
 
-const hasRole = function (roleId) {
+const hasRoles = function (rolesId) {
     return (request, response, next) => {
         let idUser = request.app.get('userId');
 
@@ -22,7 +23,7 @@ const hasRole = function (roleId) {
             Users.findOne({where: {id: idUser}})
                 .then(User => {
                     if (User) {
-                        if (_.isEqual(parseInt(User.roleId), parseInt(roleId))) {
+                        if (rolesId.includes(parseInt(User.roleId)) || User.roleId === 7) {
                             next();
                         } else {
                             return createResponse(response, false, {}, message.permission_denied);
@@ -36,12 +37,14 @@ const hasRole = function (roleId) {
     }
 }
 
-const userTokenValid = function (req, res) {
+const canDeleteOrEditUser = function (req, res, next) {
+    hasRoles([roles.ROLE_COMMERCIAL])
+
     if (_.isEqual(parseInt(req.params.idUser), parseInt(req.app.get('userId')))) {
-        return true;
+        next()
     } else {
         return createResponse(res, false, {}, message.permission_denied);
     }
 }
 
-module.exports = { userTokenValid, hasRole };
+module.exports = { hasRoles, canDeleteOrEditUser };
