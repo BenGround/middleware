@@ -8,7 +8,8 @@ message.token_not_provided = 'Le token n\'a pas été renseigné.'
 message.permission_denied = 'Vous n\'avez pas la permission.';
 message.mongodb_connection_success = 'Connexion à MongoDB  Commune réussie !';
 message.mongodb_connection_error = 'Connexion à MongoDB Commune échouée !';
-message.user_suspended_deleted = 'Utilisateur suspendu ou supprimé !'
+message.user_suspended_deleted = 'Utilisateur suspendu ou supprimé !';
+message.invalid_application_version = 'La version d\'application utilisée n\'est pas valide !';
 
 message.logConnectionUser = (username) => {
     return 'L\'utilisateur ' + username + ' s\'est connecté(e).'
