@@ -50,7 +50,7 @@ router.get('/user/all', hasRoles([roles.ROLE_COMMERCIAL]), userController.getUse
 router.get('/order/all', hasRoles([roles.ROLE_COMMERCIAL]), orderControllers.getOrders);
 
 // router.use(hasRoles([roles.ROLE_TECHNIQUE, roles.ROLE_DEVELOPPEUR]))
-router.get('/all/component', hasRoles([roles.ROLE_TECHNIQUE, roles.ROLE_DEVELOPPEUR]), componentsControllers.getAllComponents);
+router.get('/component/all', hasRoles([roles.ROLE_TECHNIQUE, roles.ROLE_DEVELOPPEUR]), componentsControllers.getAllComponents);
 router.post('/download/component', hasRoles([roles.ROLE_TECHNIQUE, roles.ROLE_DEVELOPPEUR]), componentsControllers.createDownloadComponentLog);
 
 // router.use(hasRoles([roles.ROLE_LIVREUR]))
