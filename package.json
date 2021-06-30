@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "start": "nodemon ./bin/www",
-    "d": "sequelize db:drop & sequelize db:create & sequelize db:migrate"
+    "d": "sequelize db:drop & sequelize db:create & sequelize db:migrate",
+    "r": "git pull & npm install & npm start"
   },
   "dependencies": {
     "cookie-parser": "~1.4.4",
