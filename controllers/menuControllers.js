@@ -6,6 +6,7 @@ const Menus = model['Menus'];
 const Restaurants = model['Restaurants'];
 const Articles = model['Articles'];
 const MenuArticles = model['MenuArticles'];
+const TypesArticles = model['TypesArticles'];
 const modelName = 'Menu';
 
 exports.getMenus = async (req, res) => {
@@ -14,7 +15,10 @@ exports.getMenus = async (req, res) => {
         include: [{
             model: Restaurants
         }, {
-            model: Articles
+            model: Articles,
+            include: [{
+                model: TypesArticles
+            }]
         }], })
         .then(Menus => createResponse(res, true, Menus))
         .catch(error => createErrorResponse(res, error));
@@ -24,7 +28,10 @@ exports.getMenuById = async (req, res) => {
     await Menus.findOne({ where: { id:req.params.idMenu, isDeleted: false }, include: [{
             model: Restaurants
         }, {
-            model: Articles
+            model: Articles,
+            include: [{
+                model: TypesArticles
+            }]
         }] })
         .then(Menu => {
             if (Menu) {
@@ -186,7 +193,10 @@ exports.getMenuByRestaurantId = async (req, res) => {
             include: [{
                 model: Restaurants
             }, {
-                model: Articles
+                model: Articles,
+                include: [{
+                    model: TypesArticles
+                }]
             }],
         }
     )
