@@ -383,7 +383,11 @@ exports.editOrder = async (req, res) => {
                             }],
                         }
                     ).then(Order => {
+                        console.log('lol')
                         io.emit("newDashboardData")
+
+                        io.emit("changeStatusOrder", Order.id)
+
                         createResponse(res, true, Order, message.editObject(modelName))
                     })
                 } else {
