@@ -12,7 +12,7 @@ module.exports = {
     await queryInterface.sequelize.query('insert into OrdersStatus (name) values (\'Créée\'), (\'Payée\'), (\'Validée\'), (\'Refusée\'),  (\'Acceptée par le livreur\'), (\'En livraison\'), (\'Livrée\')')
     await queryInterface.sequelize.query('insert into TypesArticles (name) values (\'Plat\'), (\'Boisson\'), (\'Sauce\'), (\'Accompagnement\')')
 
-    await queryInterface.sequelize.query('insert into Restaurants (name, address, city, restaurateurId) values (\'Centre\', \'9 Boulevard de la Renaissance\', \'Saint-Nazaire\', 2)')
+    await queryInterface.sequelize.query('insert into Restaurants (name, address, city, restaurateurId) values (\'Centre\', \'9 Boulevard de la Renaissance\', \'Saint-Nazaire\', 3)')
     await queryInterface.sequelize.query('insert into Articles (name, typesArticlesId, restaurantsId, price) values (\'Nems au poulet\', 1, 1, 5)')
     await queryInterface.sequelize.query('insert into Articles (name, typesArticlesId, restaurantsId, price) values (\'Nems au crabe\', 1, 1, 6)')
     await queryInterface.sequelize.query('insert into Articles (name, typesArticlesId, restaurantsId, price) values (\'Rouleaux de printemps\', 1, 1, 6.50)')
@@ -26,7 +26,7 @@ module.exports = {
     await queryInterface.sequelize.query('insert into MenuArticles (menusId, articlesId) values (1, 3)')
     await queryInterface.sequelize.query('insert into MenuArticles (menusId, articlesId) values (1, 4)')
     // // 8
-    await queryInterface.sequelize.query('insert into Restaurants (name, address, city, restaurateurId) values (\'The Black Sheep Tavern\', \'11 Rue de la Paix\', \'SaintNazaire\', 2)')
+    await queryInterface.sequelize.query('insert into Restaurants (name, address, city, restaurateurId) values (\'The Black Sheep\', \'11 Rue de la Paix\', \'SaintNazaire\', 3)')
     await queryInterface.sequelize.query('insert into Articles (name, typesArticlesId, restaurantsId, price) values (\'Fish Chips\', 1, 2, 13)')
     await queryInterface.sequelize.query('insert into Articles (name, typesArticlesId, restaurantsId, price) values (\'Fish Balls\', 1, 2, 7)')
     await queryInterface.sequelize.query('insert into Articles (name, typesArticlesId, restaurantsId, price) values (\'Black Shepp Burger\', 1, 2, 14)')
@@ -38,7 +38,7 @@ module.exports = {
     await queryInterface.sequelize.query('insert into MenuArticles (menusId, articlesId) values (2, 11)')
     await queryInterface.sequelize.query('insert into MenuArticles (menusId, articlesId) values (2, 13)')
     // // 14
-    await queryInterface.sequelize.query('insert into Restaurants (name, address, city, restaurateurId) values (\'Le Petit Goinfre\', \'3 Passage Henri Gautier\', \'Saint-Nazaire\', 2)')
+    await queryInterface.sequelize.query('insert into Restaurants (name, address, city, restaurateurId) values (\'Le Petit Goinfre\', \'3 Passage Henri Gautier\', \'Saint-Nazaire\', 3)')
     await queryInterface.sequelize.query('insert into Articles (name, typesArticlesId, restaurantsId, price) values (\'Entrecotes\', 1, 3, 19.9)')
     await queryInterface.sequelize.query('insert into Articles (name, typesArticlesId, restaurantsId, price) values (\'Tartares du chef classic\', 1, 3, 19.5)')
     await queryInterface.sequelize.query('insert into Articles (name, typesArticlesId, restaurantsId, price) values (\'Frites\', 4, 3, 3.5)')
@@ -51,7 +51,7 @@ module.exports = {
     await queryInterface.sequelize.query('insert into MenuArticles (menusId, articlesId) values (3, 17)')
     await queryInterface.sequelize.query('insert into MenuArticles (menusId, articlesId) values (3, 20)')
     //20
-    await queryInterface.sequelize.query('insert into Restaurants (name, address, city, restaurateurId) values (\'Le Bosphore\', \'49 Avenue de la République\', \'Saint-Nazaire\', 2)')
+    await queryInterface.sequelize.query('insert into Restaurants (name, address, city, restaurateurId) values (\'Le Bosphore\', \'49 Avenue de la République\', \'Saint-Nazaire\', 3)')
     await queryInterface.sequelize.query('insert into Articles (name, typesArticlesId, restaurantsId, price) values (\'Kebab\', 1, 4, 5.5)')
     await queryInterface.sequelize.query('insert into Articles (name, typesArticlesId, restaurantsId, price) values (\'Sandwich merguez\', 1, 4, 6)')
     await queryInterface.sequelize.query('insert into Articles (name, typesArticlesId, restaurantsId, price) values (\'Assiette Kebab\', 1, 4, 9)')
