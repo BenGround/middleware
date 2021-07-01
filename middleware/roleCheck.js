@@ -38,12 +38,23 @@ const hasRoles = function (rolesId) {
 }
 
 const canDeleteOrEditUser = function (req, res, next) {
-    hasRoles([roles.ROLE_COMMERCIAL])
+    let idUser = req.app.get('userId');
 
-    if (_.isEqual(parseInt(req.params.idUser), parseInt(req.app.get('userId')))) {
-        next()
-    } else {
-        return createResponse(res, false, {}, message.permission_denied);
+    if (secureUser(res, idUser)) {
+        Users.findOne({where: {id: idUser}})
+            .then(User => {
+                if (User) {
+                    if (User.roleId === roles.ROLE_COMMERCIAL || _.isEqual(parseInt(req.params.idUser), parseInt(req.app.get('userId')))) {
+                        next();
+                    } else {
+                        return createResponse(res, false, {}, message.permission_denied);
+                    }
+
+                } else {
+                    return createResponse(res, false, {}, message.notFoundObject('Utilisateur'))
+                }
+            })
+            .catch(error => createErrorResponse(res, error))
     }
 }
 

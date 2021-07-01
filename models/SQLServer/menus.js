@@ -25,7 +25,6 @@ module.exports = (sequelize, DataTypes) => {
   };
   Menus.init({
     name: {
-      unique: true,
       type: DataTypes.STRING,
       allowNull: false
     },

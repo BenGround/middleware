@@ -9,7 +9,6 @@ module.exports = {
         type: DataTypes.INTEGER
       },
       name: {
-        unique: true,
         type: DataTypes.STRING,
         allowNull: false
       },
